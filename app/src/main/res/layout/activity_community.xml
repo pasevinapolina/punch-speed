@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_community"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGreyLight"
+    tools:context="com.artioml.practice.CommunityActivity">
+
+    <LinearLayout
+        android:id="@+id/settingsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/half_margin"
+        android:paddingTop="@dimen/half_margin"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:checkedButton="@+id/bestResultsButton"
+            android:id="@+id/resultsSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/pick_out_line"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/bestResultsButton"
+                android:background="@drawable/toggle_widget_background"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/best_results"
+                android:textColor="@color/colorGreyDarkest" />
+
+            <RadioButton
+                android:id="@+id/avgResultsButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_widget_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/average_results"
+                android:textColor="@color/colorGreyDarkest" />
+        </RadioGroup>
+
+
+        <include layout="@layout/content_settings"  />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/settingsLayout"
+        android:id="@+id/communityRecyclerView"
+        android:background="@android:color/white"
+        android:paddingTop="@dimen/fourth_margin"
+        android:layout_above="@+id/myResultLayout"/>
+
+    <View
+        android:id="@+id/resultDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/half_margin"
+        android:background="@drawable/community_item_background"
+        android:layout_above="@+id/myResultLayout"/>
+
+    <LinearLayout
+        android:id="@+id/myResultLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <include layout="@layout/community_item" android:id="@+id/myResult"/>
+    </LinearLayout>
+
+</RelativeLayout>

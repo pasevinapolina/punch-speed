@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:id="@+id/allSettings"
+              android:layout_height="@dimen/settings_panel_height"
+              android:layout_marginTop="@dimen/half_margin">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="8">
+
+        <include layout="@layout/settings_item"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@drawable/button_background_yellow"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_settings_24dp"
+        android:layout_marginStart="@dimen/fourth_margin"
+        android:layout_marginEnd="@dimen/fourth_margin" />
+
+</LinearLayout>

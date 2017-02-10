@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextBlack"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_margin="@dimen/normal_margin"
+        android:text="@string/logout"/>
+
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:id="@+id/dialogContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextBlack"
+            android:layout_margin="@dimen/normal_margin"
+            android:text="@string/logout_message"/>
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/footerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGrey"/>
+
+    <LinearLayout
+        android:id="@+id/dialogFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:divider="@drawable/dialog_button_divider"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialogYesButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_button_background"
+            android:text="@string/yes"
+            android:textSize="18sp"
+            android:textColor="@color/colorRedDark"/>
+
+        <Button
+            android:id="@+id/dialogNoButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_button_background"
+            android:text="@string/no"
+            android:textSize="18sp"
+            android:textColor="@color/colorRedDark"/>
+
+    </LinearLayout>
+
+</LinearLayout>
