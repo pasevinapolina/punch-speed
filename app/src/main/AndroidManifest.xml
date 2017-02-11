@@ -40,19 +40,19 @@
         </activity>
         <activity
             android:name=".HistoryActivity"
-            android:label="@string/title_activity_history"
+            android:label="@string/history"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".CommunityActivity"
-            android:label="@string/title_activity_community"
+            android:label="@string/community"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_community"
+            android:label="@string/community"
             android:parentActivityName=".CommunityActivity"
             android:screenOrientation="portrait">
         </activity>

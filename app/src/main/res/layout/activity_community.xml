@@ -23,12 +23,13 @@
             android:id="@+id/resultsSwitch"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@drawable/pick_out_line"
+            android:layout_marginLeft="@dimen/fourth_margin"
+            android:layout_marginRight="@dimen/fourth_margin"
             android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/bestResultsButton"
-                android:background="@drawable/toggle_widget_background"
+                android:background="@drawable/toggle_left_background"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -42,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/toggle_widget_background"
+                android:background="@drawable/toggle_right_background"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/average_results"

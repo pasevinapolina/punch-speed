@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,18 +22,8 @@ public class ChangeNameDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        EditText usernameEditField = new EditText(getActivity());
-        usernameEditField.setHint(R.string.enter_new_username);
-        usernameEditField.setHintTextColor(
-                ContextCompat.getColor(getContext(), R.color.colorGreyDark));
-
         LayoutInflater linf = LayoutInflater.from(getActivity());
-        final View inflater = linf.inflate(R.layout.dialog_logout, null);
-
-
-
-        TextView title = (TextView) inflater.findViewById(R.id.dialogTitle);
-        title.setText(R.string.change_username);
+        final View inflater = linf.inflate(R.layout.dialog_change_name, null);
 
         Button yesButton = (Button)inflater.findViewById(R.id.dialogYesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {

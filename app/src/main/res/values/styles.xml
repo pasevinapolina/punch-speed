@@ -20,18 +20,10 @@
         <item name="android:textSize">@dimen/main_settings_text_size</item>
     </style>
     
-    <style name="CustomDialog" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="android:textColorHint">@color/colorGreyDark</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:editTextColor">@color/colorGreyDark</item>
-        <item name="android:actionBarDivider">@color/colorPrimary</item>
-        <item name="android:buttonBarButtonStyle">@style/DialogButtonBarTheme</item>
-    </style>
-
-    <style name="DialogButtonBarTheme" parent="Base.Widget.AppCompat.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorRedDark</item>
-        <item name="android:textSize">18sp</item>
+    <style name="ButtonTextStyle" parent="Base.Widget.AppCompat.Button">
         <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:typeface">normal</item>
     </style>
 
     <style name="MainSettingsItemTheme" parent="@android:style/Widget.Button.Toggle">

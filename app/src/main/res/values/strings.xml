@@ -4,8 +4,8 @@
 
     <!--content_main.xml-->
     <string name="hit_button">УДАР</string>
-    <string name="community">СООБЩЕСТВО</string>
-    <string name="history">ИСТОРИЯ</string>
+    <string name="community">Сообщество</string>
+    <string name="history">История</string>
 
     <!--content_license.xml-->
     <string name="license_title">Лицензионное соглашение</string>
@@ -39,7 +39,6 @@
     <!--history_item.xml-->
     <string name="speed_title_h">cкорость удара</string>
     <string name="reaction_title_h">cкорость реакции</string>
-    <string name="title_activity_history">История</string>
 
     <!--menu_history.xml-->
     <string name="speed_menu">Cкорость удара</string>
@@ -50,22 +49,31 @@
     <!--dialog_history_settings.xml-->
     <string name="doesnt_matter">не важно</string>
 
+    <!--community_logout.xml-->
+    <string name="enter_username">Введите имя</string>
+    <string name="login">Войти</string>
+    <string name="load_previous_results">Загрузить предыдущие результаты</string>
+
     <!--community_activity.xml-->
-    <string name="title_activity_community">Сообщество</string>
+    <string name="best_results">Лучшие результаты</string>
+    <string name="average_results">Средние результаты</string>
+
+    <!--menu_community.xml-->
     <string name="average_values">Средние значения</string>
     <string name="change_username">Сменить имя</string>
     <string name="logout">Выйти из сообщества</string>
+
+    <!--dialog_change_name.xml-->
+    <string name="enter_new_username">Введите новое имя</string>
+
+    <!--dialog_logout.xml-->
+    <string name="logout_message">Ваши результаты будут скрыты из топа.\nВыйти?</string>
     <string name="yes">Да</string>
     <string name="no_cap">Нет</string>
-    <string name="logout_message">Ваши результаты будут скрыты из топа.\nВыйти?</string>
-    <string name="ok">ОК</string>
-    <string name="enter_username">Введите имя</string>
-    <string name="enter_new_username">Введите новое имя</string>
-    <string name="login">ВОЙТИ</string>
-    <string name="load_previous_results">Загрузить предыдущие результаты</string>
-    <string name="best_results">Лучшие результаты</string>
-    <string name="average_results">Средние результаты</string>
+
+    <!--dialog_average_values.xml-->
     <string name="average">Среднее</string>
     <string name="my">Моё</string>
+    <string name="ok">ОК</string>
 
 </resources>

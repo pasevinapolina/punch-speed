@@ -48,7 +48,7 @@
                 android:layout_height="@dimen/button_height"
                 android:background="@drawable/button_background_yellow"
                 android:text="@string/community"
-                android:typeface="normal"
+                android:textAppearance="@style/ButtonTextStyle"
                 android:layout_gravity="bottom|center_horizontal" />
 
             <Button
@@ -57,7 +57,7 @@
                 android:layout_height="@dimen/button_height"
                 android:background="@drawable/button_background_yellow"
                 android:text="@string/history"
-                android:typeface="normal"
+                android:textAppearance="@style/ButtonTextStyle"
                 android:layout_marginTop="@dimen/half_margin"
                 android:layout_marginBottom="@dimen/half_margin"
                 android:layout_gravity="bottom|center_horizontal" />

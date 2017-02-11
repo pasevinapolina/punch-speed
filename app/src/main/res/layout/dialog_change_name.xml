@@ -13,7 +13,7 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_margin="@dimen/normal_margin"
-        android:text="@string/logout"/>
+        android:text="@string/change_username"/>
 
     <View
         android:id="@+id/headerDivider"
@@ -26,12 +26,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextBlack"
+            android:textColor="@color/colorGreyDarkest"
+            android:textColorHint="@color/colorGreyDark"
+            android:textSize="14sp"
             android:layout_margin="@dimen/normal_margin"
-            android:text="@string/logout_message"/>
+            android:hint="@string/enter_new_username"/>
     </LinearLayout>
 
 

@@ -26,7 +26,7 @@ public class LogoutDialog extends AppCompatDialogFragment {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getActivity(), "LOGOUT", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "LOGOUT", Toast.LENGTH_LONG).show();
                 dismiss();
             }
         });
