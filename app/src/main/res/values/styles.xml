@@ -22,7 +22,7 @@
     
     <style name="ButtonTextStyle" parent="Base.Widget.AppCompat.Button">
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:typeface">normal</item>
     </style>
 

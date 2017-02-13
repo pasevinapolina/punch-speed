@@ -32,7 +32,7 @@
     <dimen name="seek_bar_text_size">12sp</dimen>
 
     <dimen name="punch_button_size">180dp</dimen>
-    <dimen name="punch_button_margin">64dp</dimen>
+    <dimen name="punch_button_margin">32dp</dimen>
 
     <!--Bottom Sheet height-->
     <dimen name="bottom_sheet_height">124dp</dimen>

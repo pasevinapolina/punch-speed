@@ -90,23 +90,7 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
-        myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
-
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//                Log.i("BottomSheet", "On slide");
-//            }
-//        });
+       setBottomSheet();
     }
 
     @Override
@@ -143,6 +127,26 @@ public class CommunityActivity extends AppCompatActivity {
         if(sharedPreferences.getBoolean(IS_LOGGED_IN, true)) {
 
         }
+    }
+
+    private void setBottomSheet() {
+        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
+        myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
+
+//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//                Log.i("BottomSheet", "On slide");
+//            }
+//        });
     }
 
 
