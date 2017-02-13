@@ -2,7 +2,6 @@ package com.artioml.practice;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
  * Created by Polina P on 05.02.2017.
  */
 
-public class CommunityActivity extends AppCompatActivity {
+public class CommunityActivity extends BaseSettingsActivity {
 
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
@@ -94,6 +92,11 @@ public class CommunityActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_community, menu);
         return true;
@@ -115,7 +118,6 @@ public class CommunityActivity extends AppCompatActivity {
                 new LogoutDialog().show(manager, LOGOUT_DIALOG);
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
