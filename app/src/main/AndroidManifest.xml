@@ -11,7 +11,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,7 +22,6 @@
             android:name=".LicenseActivity"
             android:label=""
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,8 +30,7 @@
         <activity
             android:name=".PunchResultActivity"
             android:label=""
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.artioml.practice.MainActivity"/>
@@ -41,20 +38,26 @@
         <activity
             android:name=".HistoryActivity"
             android:label="@string/history"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.artioml.practice.MainActivity"/>
         </activity>
         <activity
             android:name=".CommunityActivity"
             android:label="@string/community"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.artioml.practice.MainActivity"/>
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/community"
-            android:parentActivityName=".CommunityActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".CommunityActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.artioml.practice.CommunityActivity"/>
         </activity>
     </application>
 
