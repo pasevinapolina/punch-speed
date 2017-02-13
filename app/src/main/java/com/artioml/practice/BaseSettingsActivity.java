@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.artioml.practice.data.PunchType;
 
 /**
- * Created by user on 13.02.2017.
+ * Created by Polina P on 13.02.2017.
  */
 
 public class BaseSettingsActivity extends AppCompatActivity {
