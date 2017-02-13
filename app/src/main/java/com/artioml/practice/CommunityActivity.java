@@ -2,22 +2,25 @@ package com.artioml.practice;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.artioml.practice.data.CommunityListProvider;
 import com.artioml.practice.data.CommunityProvider;
-import com.artioml.practice.data.DatabaseDescription;
 
 import java.util.ArrayList;
 
@@ -38,6 +41,8 @@ public class CommunityActivity extends AppCompatActivity {
     private CommunityAdapter adapter;
     private ArrayList<Result> communityResults;
     private CommunityProvider communityProvider;
+
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +86,27 @@ public class CommunityActivity extends AppCompatActivity {
         avgResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
+
+        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
+        myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
+
+//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//                Log.i("BottomSheet", "On slide");
+//            }
+//        });
     }
 
     @Override

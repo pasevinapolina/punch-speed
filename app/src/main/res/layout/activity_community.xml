@@ -1,84 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     android:id="@+id/activity_community"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGreyLight"
-    tools:context="com.artioml.practice.CommunityActivity">
+    android:fitsSystemWindows="true"
+    tools:context="com.artioml.practice.CommunityActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/settingsLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/half_margin"
-        android:paddingTop="@dimen/half_margin"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RadioGroup
-            android:checkedButton="@+id/bestResultsButton"
-            android:id="@+id/resultsSwitch"
+        <LinearLayout
+            android:id="@+id/settingsLayout"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginLeft="@dimen/fourth_margin"
-            android:layout_marginRight="@dimen/fourth_margin"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/half_margin"
+            android:paddingTop="@dimen/half_margin"
+            android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/bestResultsButton"
-                android:background="@drawable/toggle_left_background"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/best_results"
-                android:textColor="@color/colorGreyDarkest" />
+            <RadioGroup
+                android:checkedButton="@+id/bestResultsButton"
+                android:id="@+id/resultsSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="@dimen/fourth_margin"
+                android:layout_marginRight="@dimen/fourth_margin"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/avgResultsButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_right_background"
-                android:button="@null"
-                android:gravity="center"
-                android:text="@string/average_results"
-                android:textColor="@color/colorGreyDarkest" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/bestResultsButton"
+                    android:background="@drawable/toggle_left_background"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="@string/best_results"
+                    android:textColor="@color/colorGreyDarkest" />
+
+                <RadioButton
+                    android:id="@+id/avgResultsButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_right_background"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="@string/average_results"
+                    android:textColor="@color/colorGreyDarkest" />
+            </RadioGroup>
+
+            <include layout="@layout/content_settings"  />
+        </LinearLayout>
 
 
-        <include layout="@layout/content_settings"  />
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/communityRecyclerView"
+            android:layout_below="@id/settingsLayout"
+            android:background="@android:color/white"
+            android:paddingTop="@dimen/fourth_margin"
+            android:paddingBottom="@dimen/bottom_sheet_content_height"/>
+        <!--android:layout_above="@id/myResultBottomSheet"-->
 
-    </LinearLayout>
+        <!--<View-->
+            <!--android:id="@+id/resultDivider"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/half_margin"-->
+            <!--android:layout_above="@+id/myResultBottomSheet"-->
+            <!--android:background="@drawable/community_item_background"/>-->
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/settingsLayout"
-        android:id="@+id/communityRecyclerView"
-        android:background="@android:color/white"
-        android:paddingTop="@dimen/fourth_margin"
-        android:layout_above="@+id/myResultLayout"/>
 
-    <View
-        android:id="@+id/resultDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/half_margin"
-        android:background="@drawable/community_item_background"
-        android:layout_above="@+id/myResultLayout"/>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/myResultBottomSheet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<include layout="@layout/community_item" android:id="@+id/myResult"/>-->
+        <!--</LinearLayout>-->
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/myResultLayout"
+        android:orientation="vertical"
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:clipToPadding="true"
+        android:background="@android:color/transparent"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        app:behavior_peekHeight="@dimen/bottom_sheet_peek_height">
 
-        <include layout="@layout/community_item" android:id="@+id/myResult"/>
+            <View
+                android:id="@+id/resultDivider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/half_margin"
+                android:background="@drawable/community_item_background"/>
+
+            <include layout="@layout/community_item" />
+
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
