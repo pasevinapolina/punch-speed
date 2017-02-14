@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,51 +10,58 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.artioml.practice.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:fillViewport="true">
 
-    <include layout="@layout/content_settings" android:id="@+id/settingsPanel" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!--android:gravity="center_vertical|center_horizontal"-->
-
-    <Button
-        android:id="@+id/punchButton"
-        android:layout_width="@dimen/punch_button_size"
-        android:layout_height="@dimen/punch_button_size"
-        android:background="@drawable/punch_button"
-        android:text="@string/hit_button"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/punch_button_text_size"
-        android:textStyle="bold"
-        android:typeface="normal"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/punch_button_margin"
-        android:layout_below="@id/settingsPanel"
-        android:layout_centerHorizontal="true" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        <include layout="@layout/content_settings" android:id="@+id/settingsPanel" />
 
         <Button
-            android:id="@+id/communityButton"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:background="@drawable/button_background_yellow"
-            android:text="@string/community"
-            android:textAppearance="@style/ButtonTextStyle"/>
+            android:id="@+id/punchButton"
+            android:layout_width="@dimen/punch_button_size"
+            android:layout_height="@dimen/punch_button_size"
+            android:background="@drawable/punch_button"
+            android:text="@string/hit_button"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/punch_button_text_size"
+            android:textStyle="bold"
+            android:typeface="normal"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/punch_button_margin"
+            android:layout_marginBottom="@dimen/punch_button_margin"
+            android:layout_below="@id/settingsPanel"
+            android:layout_centerHorizontal="true" />
 
-        <Button
-            android:id="@+id/historyButton"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:background="@drawable/button_background_yellow"
-            android:text="@string/history"
-            android:textAppearance="@style/ButtonTextStyle"
-            android:layout_marginTop="@dimen/half_margin"
-            android:layout_marginBottom="@dimen/half_margin"/>
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="bottom"
+            android:layout_below="@id/punchButton">
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/communityButton"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:background="@drawable/button_background_yellow"
+                android:text="@string/community"
+                android:textAppearance="@style/ButtonTextStyle"/>
+
+            <Button
+                android:id="@+id/historyButton"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:background="@drawable/button_background_yellow"
+                android:text="@string/history"
+                android:textAppearance="@style/ButtonTextStyle"
+                android:layout_marginTop="@dimen/half_margin"
+                android:layout_marginBottom="@dimen/half_margin"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>
