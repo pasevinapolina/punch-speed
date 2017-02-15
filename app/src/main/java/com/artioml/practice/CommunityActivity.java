@@ -27,7 +27,8 @@ import java.util.ArrayList;
  * Created by Polina P on 05.02.2017.
  */
 
-public class CommunityActivity extends BaseSettingsActivity {
+public class CommunityActivity extends BaseSettingsActivity
+        implements ChangeNameDialog.ChangeNameListener {
 
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
@@ -42,6 +43,8 @@ public class CommunityActivity extends BaseSettingsActivity {
     private CommunityProvider communityProvider;
 
     private BottomSheetBehavior mBottomSheetBehavior;
+    private RadioButton bestResultsButton;
+    private RadioButton avgResultsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,8 @@ public class CommunityActivity extends BaseSettingsActivity {
             }
         });
 
-        RadioButton bestResultsButton = (RadioButton)findViewById(R.id.bestResultsButton);
-        RadioButton avgResultsButton = (RadioButton)findViewById(R.id.avgResultsButton);
+        bestResultsButton = (RadioButton)findViewById(R.id.bestResultsButton);
+        avgResultsButton = (RadioButton)findViewById(R.id.avgResultsButton);
 
         bestResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,4 +175,15 @@ public class CommunityActivity extends BaseSettingsActivity {
     }
 
 
+    @Override
+    public void updateResult(String username) {
+        communityProvider.setCurrentLogin(username);
+        Result currentResult;
+        if(bestResultsButton.isChecked()) {
+            currentResult = communityProvider.getBestUserResult();
+        } else {
+            currentResult = communityProvider.getAverageUserResult();
+        }
+        fillBottomSheet(currentResult);
+    }
 }
