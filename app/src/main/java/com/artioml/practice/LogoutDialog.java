@@ -2,6 +2,7 @@ package com.artioml.practice;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AlertDialog;
 
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 public class LogoutDialog extends AppCompatDialogFragment {
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater linf = LayoutInflater.from(getActivity());
@@ -26,7 +28,8 @@ public class LogoutDialog extends AppCompatDialogFragment {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "LOGOUT", Toast.LENGTH_LONG).show();
+                LogoutListener activity = (LogoutListener)getActivity();
+                activity.logout();
                 dismiss();
             }
         });
@@ -44,5 +47,9 @@ public class LogoutDialog extends AppCompatDialogFragment {
 
         builder.setCancelable(true);
         return builder.create();
+    }
+
+    public interface LogoutListener {
+        void logout();
     }
 }
