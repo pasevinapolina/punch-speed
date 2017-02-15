@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.artioml.practice.data.CommunityListProvider;
 import com.artioml.practice.data.CommunityProvider;
+import com.artioml.practice.data.Result;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Created by Polina P on 05.02.2017.
@@ -107,17 +107,17 @@ public class CommunityActivity extends AppCompatActivity
         LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
 
         TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
-        loginTextView.setText(result.user);
+        loginTextView.setText(result.getUser());
 
         TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
-        speedTextView.setText(getString(R.string.speed_result, result.speed));
+        speedTextView.setText(getString(R.string.speed_result, result.getSpeed()));
 
         TextView reactionTextView = (TextView)bottomSheet.findViewById(R.id.reactionCommunityTextView);
-        reactionTextView.setText(getString(R.string.reaction_result, result.reaction));
+        reactionTextView.setText(getString(R.string.reaction_result, result.getReaction()));
 
         TextView accelerationTextView = (TextView)bottomSheet.findViewById(R.id.accelerationCommunityTextView);
         accelerationTextView.setText(Html.fromHtml(
-                getString(R.string.acceleration_result, result.acceleration)));
+                getString(R.string.acceleration_result, result.getAcceleration())));
     }
 
     @Override

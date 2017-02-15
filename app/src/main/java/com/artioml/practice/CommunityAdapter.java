@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.artioml.practice.data.Result;
+
 import java.util.List;
 
 /**
@@ -37,12 +39,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         Result currentResult = communityResults.get(position);
 
         holder.topNumberTextView.setText(position + 1 + "");
-        holder.loginTextView.setText(currentResult.user);
-        holder.speedTextView.setText(context.getString(R.string.speed_result, currentResult.speed));
+        holder.loginTextView.setText(currentResult.getUser());
+        holder.speedTextView.setText(context.getString(R.string.speed_result, currentResult.getSpeed()));
         holder.reactionTextView.setText(
-                context.getString(R.string.reaction_result, currentResult.reaction));
+                context.getString(R.string.reaction_result, currentResult.getReaction()));
         holder.accelerationTextView.setText(Html.fromHtml(
-                context.getString(R.string.acceleration_result, currentResult.acceleration)));
+                context.getString(R.string.acceleration_result, currentResult.getAcceleration())));
     }
 
     @Override

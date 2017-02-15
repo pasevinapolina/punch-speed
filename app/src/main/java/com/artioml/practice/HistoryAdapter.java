@@ -1,7 +1,6 @@
 package com.artioml.practice;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -12,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.artioml.practice.data.PunchType;
+import com.artioml.practice.data.Result;
 
 import java.util.List;
 
@@ -80,30 +80,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         Result currentResult = history.get(position);
 
         holder.punchTypeTextView.setText(context.getResources().getStringArray(
-                R.array.punch_type_list)[currentResult.punchType]);
-        String date = currentResult.date;
+                R.array.punch_type_list)[currentResult.getPunchType()]);
+        String date = currentResult.getDate();
         holder.dateTextView.setText(
                 date.substring(6, 8) + "." + date.substring(3, 5) + "." + date.substring(0, 2));
-        holder.speedTextView.setText(context.getString(R.string.speed_result, currentResult.speed));
+        holder.speedTextView.setText(context.getString(R.string.speed_result, currentResult.getSpeed()));
         holder.reactionTextView.setText(
-                context.getString(R.string.reaction_result, currentResult.reaction));
+                context.getString(R.string.reaction_result, currentResult.getReaction()));
         holder.accelerationTextView.setText(Html.fromHtml(
-                context.getString(R.string.acceleration_result, currentResult.acceleration)));
-        holder.weightTextView.setText(currentResult.glovesWeight);
+                context.getString(R.string.acceleration_result, currentResult.getAcceleration())));
+        holder.weightTextView.setText(currentResult.getGlovesWeight());
 
-        String hand = "ic_" + currentResult.hand + "_hand";
+        String hand = "ic_" + currentResult.getHand() + "_hand";
         holder.handsImageView.setImageDrawable(ContextCompat.getDrawable(context,
                 context.getResources().getIdentifier(hand, "drawable", context.getPackageName())));
 
-        String gloves = "ic_gloves_" + currentResult.gloves;
+        String gloves = "ic_gloves_" + currentResult.getGloves();
         holder.glovesImageView.setImageDrawable(ContextCompat.getDrawable(context,
                 context.getResources().getIdentifier(gloves, "drawable", context.getPackageName())));
 
-        if (PunchType.getTypeByValue(currentResult.gloves) == PunchType.GLOVES_ON)
+        if (PunchType.getTypeByValue(currentResult.getGloves()) == PunchType.GLOVES_ON)
             holder.weightTextView.setVisibility(View.VISIBLE);
         else holder.weightTextView.setVisibility(View.GONE);
 
-        String pos = "ic_punch_" +  currentResult.position + "_step";
+        String pos = "ic_punch_" +  currentResult.getPosition() + "_step";
         holder.positionImageView.setImageDrawable(ContextCompat.getDrawable(context,
                 context.getResources().getIdentifier(pos, "drawable", context.getPackageName())));
     }
