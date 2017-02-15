@@ -27,7 +27,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class MainActivity extends BaseSettingsActivity {
+public class MainActivity extends AppCompatActivity implements MainSettingsDialog.SettingsDialogListener {
 
     private static final String IS_FIRST_TIME = "pref_isFirstTime";
 
@@ -45,6 +45,7 @@ public class MainActivity extends BaseSettingsActivity {
     private float count;
 
     private ArrayList<Float> data;
+    private SettingsChangeListener settingsChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,8 @@ public class MainActivity extends BaseSettingsActivity {
             }
         });
 
-        fillSettingsPanel();
+        settingsChangeListener = new MainSettingsChangeListener(this);
+        settingsChangeListener.fillSettingsPanel();
 
 //        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
 //        attrBuilder.setUsage(AudioAttributes.USAGE_GAME);
@@ -154,7 +156,7 @@ public class MainActivity extends BaseSettingsActivity {
 
     @Override
     protected void onResume() {
-//        fillSettingsPanel();
+        settingsChangeListener.fillSettingsPanel();
         punchButton.setEnabled(true);
         super.onResume();
     }
@@ -251,4 +253,9 @@ public class MainActivity extends BaseSettingsActivity {
                 .build();
     }
 
+    @Override
+    public void updateSettings() {
+        punchButton.setEnabled(true);
+        settingsChangeListener.fillSettingsPanel();
+    }
 }

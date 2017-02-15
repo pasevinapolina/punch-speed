@@ -96,7 +96,7 @@ public class MainSettingsDialog extends /*BottomSheet*/Dialog {
         setOnDismissListener(new DialogInterface.OnDismissListener(){
             @Override
             public void onDismiss(DialogInterface dialog) {
-                ((BaseSettingsActivity) context).onResume();
+                ((SettingsDialogListener) context).updateSettings();
             }
         });
     }
@@ -195,6 +195,10 @@ public class MainSettingsDialog extends /*BottomSheet*/Dialog {
                 .putString(GLOVES_WEIGHT, weightEditText.getText().toString())
                 .putInt(PUNCH_TYPE, spinner.getSelectedItemPosition())
                 .apply();
+    }
+
+    public interface SettingsDialogListener {
+        void updateSettings();
     }
 
 }

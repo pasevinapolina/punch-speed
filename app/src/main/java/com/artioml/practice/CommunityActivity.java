@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -22,13 +22,15 @@ import com.artioml.practice.data.CommunityListProvider;
 import com.artioml.practice.data.CommunityProvider;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by Polina P on 05.02.2017.
  */
 
-public class CommunityActivity extends BaseSettingsActivity
-        implements ChangeNameDialog.ChangeNameListener {
+public class CommunityActivity extends AppCompatActivity
+        implements ChangeNameDialog.ChangeNameListener, LogoutDialog.LogoutListener,
+                    MainSettingsDialog.SettingsDialogListener {
 
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
@@ -45,6 +47,8 @@ public class CommunityActivity extends BaseSettingsActivity
     private BottomSheetBehavior mBottomSheetBehavior;
     private RadioButton bestResultsButton;
     private RadioButton avgResultsButton;
+
+    private SettingsChangeListener settingsChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,9 @@ public class CommunityActivity extends BaseSettingsActivity
             }
         });
 
+        settingsChangeListener = new MainSettingsChangeListener(this);
+        settingsChangeListener.fillSettingsPanel();
+
         setBottomSheet();
         fillBottomSheet(communityProvider.getBestUserResult());
     }
@@ -115,6 +122,7 @@ public class CommunityActivity extends BaseSettingsActivity
 
     @Override
     protected void onResume() {
+        settingsChangeListener.fillSettingsPanel();
         super.onResume();
     }
 
@@ -174,7 +182,6 @@ public class CommunityActivity extends BaseSettingsActivity
 //        });
     }
 
-
     @Override
     public void updateResult(String username) {
         communityProvider.setCurrentLogin(username);
@@ -185,5 +192,20 @@ public class CommunityActivity extends BaseSettingsActivity
             currentResult = communityProvider.getAverageUserResult();
         }
         fillBottomSheet(currentResult);
+    }
+
+    @Override
+    public void logout() {
+        communityProvider.logout();
+//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//
+//        RecyclerView communityList = (RecyclerView) findViewById(R.id.communityRecyclerView);
+//        communityList.setPadding(communityList.getPaddingLeft(),
+//                communityList.getPaddingTop(), communityList.getPaddingRight(), 0);
+    }
+
+    @Override
+    public void updateSettings() {
+        settingsChangeListener.fillSettingsPanel();
     }
 }
