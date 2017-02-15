@@ -8,7 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -54,6 +54,11 @@ public class MainSettingsDialog extends /*BottomSheet*/Dialog {
     private String hand;
     private String gloves;
     private String position;
+
+    static
+    {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     public MainSettingsDialog(final Context context) {
         //super(context, R.style.SettingsTheme);

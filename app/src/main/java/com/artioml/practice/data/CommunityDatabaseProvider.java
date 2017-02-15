@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.artioml.practice.Result;
 import com.artioml.practice.data.CommunityProvider;
 
 /**
@@ -68,5 +69,15 @@ public class CommunityDatabaseProvider implements CommunityProvider {
     @Override
     public void logout() {
 
+    }
+
+    @Override
+    public Result getBestUserResult() {
+        return null;
+    }
+
+    @Override
+    public Result getAverageUserResult() {
+        return null;
     }
 }

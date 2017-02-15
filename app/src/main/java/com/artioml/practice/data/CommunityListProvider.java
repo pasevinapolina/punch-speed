@@ -6,6 +6,7 @@ import com.artioml.practice.data.CommunityProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,6 +25,8 @@ public class CommunityListProvider implements CommunityProvider {
     private ArrayList<Result> communityResults;
     private String currentLogin;
 
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd HH.mm.ss", Locale.ROOT);
+
     public CommunityListProvider() {
         this.communityResults = new ArrayList<>();
         this.currentLogin = "Hello";
@@ -31,7 +34,6 @@ public class CommunityListProvider implements CommunityProvider {
 
     @Override
     public void addDataSet() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd HH.mm.ss", Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
 
         communityResults = new ArrayList<>();
@@ -75,6 +77,20 @@ public class CommunityListProvider implements CommunityProvider {
 
     }
 
+    @Override
+    public Result getBestUserResult() {
+        return new Result(currentLogin, 2, PunchType.RIGHT_HAND.getValue(),
+                PunchType.GLOVES_ON.getValue(), "100", PunchType.WITHOUT_STEP.getValue(),
+                100, 10, 70, sdf.format(new Date()));
+    }
+
+    @Override
+    public Result getAverageUserResult() {
+        return new Result(currentLogin, 2, PunchType.RIGHT_HAND.getValue(),
+                PunchType.GLOVES_ON.getValue(), "100", PunchType.WITHOUT_STEP.getValue(),
+                85, 15, 66, sdf.format(new Date()));
+    }
+
     public ArrayList<Result> getCommunityResults() {
         return communityResults;
     }
@@ -82,4 +98,6 @@ public class CommunityListProvider implements CommunityProvider {
     public void setCommunityResults(ArrayList<Result> communityResults) {
         this.communityResults = communityResults;
     }
+
+
 }

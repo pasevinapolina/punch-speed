@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,18 +78,36 @@ public class CommunityActivity extends BaseSettingsActivity {
         bestResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                fillBottomSheet(communityProvider.getBestUserResult());
             }
         });
 
         avgResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                fillBottomSheet(communityProvider.getAverageUserResult());
             }
         });
 
-       setBottomSheet();
+        setBottomSheet();
+        fillBottomSheet(communityProvider.getBestUserResult());
+    }
+
+    private void fillBottomSheet(Result result) {
+        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+
+        TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
+        loginTextView.setText(result.user);
+
+        TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
+        speedTextView.setText(getString(R.string.speed_result, result.speed));
+
+        TextView reactionTextView = (TextView)bottomSheet.findViewById(R.id.reactionCommunityTextView);
+        reactionTextView.setText(getString(R.string.reaction_result, result.reaction));
+
+        TextView accelerationTextView = (TextView)bottomSheet.findViewById(R.id.accelerationCommunityTextView);
+        accelerationTextView.setText(Html.fromHtml(
+                getString(R.string.acceleration_result, result.acceleration)));
     }
 
     @Override
@@ -137,6 +156,7 @@ public class CommunityActivity extends BaseSettingsActivity {
 
         TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
         myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
+
 
 //        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 //            @Override

@@ -1,5 +1,7 @@
 package com.artioml.practice.data;
 
+import com.artioml.practice.Result;
+
 /**
  * Created by Polina P on 06.02.2017.
  */
@@ -12,4 +14,6 @@ public interface CommunityProvider {
     String getCurrentLogin();
     void setCurrentLogin(String newLogin);
     void logout();
+    Result getBestUserResult();
+    Result getAverageUserResult();
 }
