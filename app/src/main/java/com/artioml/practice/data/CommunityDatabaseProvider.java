@@ -3,10 +3,6 @@ package com.artioml.practice.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import com.artioml.practice.Result;
-import com.artioml.practice.data.CommunityProvider;
 
 /**
  * Created by Polina P on 06.02.2017.
@@ -78,6 +74,11 @@ public class CommunityDatabaseProvider implements CommunityProvider {
 
     @Override
     public Result getAverageUserResult() {
+        return null;
+    }
+
+    @Override
+    public Result getAverageResults() {
         return null;
     }
 }

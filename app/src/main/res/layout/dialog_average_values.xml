@@ -64,10 +64,12 @@
                     android:layout_weight="1"
                     android:text="@string/speed_title"/>
                 <TextView
+                    android:id="@+id/mySpeedTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/speed_result"/>
                 <TextView
+                    android:id="@+id/avgSpeedTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/speed_result"/>
@@ -81,10 +83,12 @@
                     android:layout_weight="1"
                     android:text="@string/reaction_title"/>
                 <TextView
+                    android:id="@+id/myReactionTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/reaction_result"/>
                 <TextView
+                    android:id="@+id/avgReactionTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/reaction_result"/>
@@ -98,10 +102,12 @@
                     android:layout_weight="1"
                     android:text="@string/acceleration_title"/>
                 <TextView
+                    android:id="@+id/myAccelerationTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/acceleration_result"/>
                 <TextView
+                    android:id="@+id/avgAccelerationTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/acceleration_result"/>

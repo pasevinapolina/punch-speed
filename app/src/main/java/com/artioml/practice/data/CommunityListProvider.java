@@ -1,13 +1,9 @@
 package com.artioml.practice.data;
 
-import com.artioml.practice.Result;
-import com.artioml.practice.data.CommunityProvider;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import static com.artioml.practice.data.PunchType.GLOVES_OFF;
@@ -89,6 +85,13 @@ public class CommunityListProvider implements CommunityProvider {
         return new Result(currentLogin, 2, PunchType.RIGHT_HAND.getValue(),
                 PunchType.GLOVES_ON.getValue(), "100", PunchType.WITHOUT_STEP.getValue(),
                 85, 15, 66, sdf.format(new Date()));
+    }
+
+    @Override
+    public Result getAverageResults() {
+        return new Result(currentLogin, 2, PunchType.RIGHT_HAND.getValue(),
+                PunchType.GLOVES_ON.getValue(), "100", PunchType.WITHOUT_STEP.getValue(),
+                70, 20, 88, sdf.format(new Date()));
     }
 
     public ArrayList<Result> getCommunityResults() {

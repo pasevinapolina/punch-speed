@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.artioml.practice.Result;
-
 import java.util.ArrayList;
 
 /**

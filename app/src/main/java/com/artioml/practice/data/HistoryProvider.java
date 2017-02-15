@@ -1,7 +1,5 @@
 package com.artioml.practice.data;
 
-import com.artioml.practice.Result;
-
 import java.util.ArrayList;
 
 /**

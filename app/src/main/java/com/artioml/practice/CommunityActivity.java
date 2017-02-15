@@ -96,7 +96,7 @@ public class CommunityActivity extends AppCompatActivity
             }
         });
 
-        settingsChangeListener = new MainSettingsChangeListener(this);
+        settingsChangeListener = new MainSettingsChangeListener(this, getWindow().getDecorView().getRootView());
         settingsChangeListener.fillSettingsPanel();
 
         setBottomSheet();
@@ -139,7 +139,8 @@ public class CommunityActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.average_values:
-                new AverageValuesDialog().show(manager, AVERAGE_VALUES_DIALOG);
+                AverageValuesDialog averageValuesDialog = new AverageValuesDialog();
+                averageValuesDialog.show(manager, AVERAGE_VALUES_DIALOG);
                 break;
             case R.id.change_username:
                 new ChangeNameDialog().show(manager, CHANGE_NAME_DIALOG);

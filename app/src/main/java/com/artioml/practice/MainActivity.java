@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
             }
         });
 
-        settingsChangeListener = new MainSettingsChangeListener(this);
+        settingsChangeListener = new MainSettingsChangeListener(this, getWindow().getDecorView().getRootView());
         settingsChangeListener.fillSettingsPanel();
 
 //        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
