@@ -49,6 +49,8 @@ public class AverageValuesDialog extends AppCompatDialogFragment {
 
     private void fillResultTable(View rootView) {
         CommunityProvider communityProvider = ServiceLocator.getCommunityProvider(null);
+
+        //1 column My Values
         Result userResult = communityProvider.getAverageUserResult();
 
         TextView mySpeedTextView = (TextView)rootView.findViewById(R.id.mySpeedTextView);
@@ -61,6 +63,7 @@ public class AverageValuesDialog extends AppCompatDialogFragment {
         myAccelerationTextView.setText(Html.fromHtml(
                 getResources().getString(R.string.acceleration_result, userResult.getAcceleration())));
 
+        //2 column Average Values
         Result avgResult = communityProvider.getAverageResults();
 
         TextView avgSpeedTextView = (TextView)rootView.findViewById(R.id.avgSpeedTextView);
@@ -73,20 +76,22 @@ public class AverageValuesDialog extends AppCompatDialogFragment {
         avgAccelerationTextView.setText(Html.fromHtml(
                 getResources().getString(R.string.acceleration_result, avgResult.getAcceleration())));
 
-        if(userResult.getSpeed() > avgResult.getSpeed())
-            mySpeedTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if(userResult.getSpeed() < avgResult.getSpeed())
-            avgSpeedTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        boldBestValue(userResult.getSpeed(), avgResult.getSpeed(),
+                mySpeedTextView, avgSpeedTextView);
 
-        if(userResult.getReaction() < avgResult.getReaction())
-            myReactionTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if(userResult.getReaction() > avgResult.getReaction())
-            avgReactionTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        boldBestValue(userResult.getReaction(), avgResult.getReaction(),
+            avgReactionTextView, myReactionTextView);
 
-        if(userResult.getAcceleration() > avgResult.getAcceleration())
-            myAccelerationTextView.setTypeface(Typeface.DEFAULT_BOLD);
-        if(userResult.getAcceleration() < avgResult.getAcceleration())
-            avgAccelerationTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        boldBestValue(userResult.getAcceleration(), avgResult.getAcceleration(),
+            myAccelerationTextView, avgAccelerationTextView);
 
+    }
+
+    private void boldBestValue(float firstValue, float secondValue,
+                               TextView firstTextView, TextView secondTextView) {
+        if(firstValue > secondValue)
+            firstTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        if(secondValue > firstValue)
+            secondTextView.setTypeface(Typeface.DEFAULT_BOLD);
     }
 }
