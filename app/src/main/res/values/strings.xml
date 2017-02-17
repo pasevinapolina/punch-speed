@@ -2,17 +2,17 @@
 
     <string name="app_name">Сила удара</string>
 
-    <!--content_main.xml-->
+    <!-- content_main.xml -->
     <string name="hit_button">УДАР</string>
     <string name="community">Сообщество</string>
     <string name="history">История</string>
 
-    <!--content_license.xml-->
+    <!-- content_license.xml -->
     <string name="license_title">Лицензионное соглашение</string>
     <string name="license_agreement">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="accept">Принять</string>
 
-    <!--dialog_main_settings.xml-->
+    <!-- dialog_main_settings.xml -->
     <string name="left_hand_item">левая</string>
     <string name="right_hand_item">правая</string>
     <string name="glove">перчатка</string>
@@ -23,12 +23,12 @@
     <string name="gloves_weight">вес перчатки</string>
     <string name="oz">oz</string>
 
-    <!--result_item.xml-->
+    <!-- row_result.xml -->
     <string name="bad">плохо</string>
     <string name="middle">средне</string>
     <string name="good">хорошо</string>
 
-    <!--activity_punch_result.xml-->
+    <!-- activity_punch_result.xml -->
     <string name="speed_title">скорость\nудара</string>
     <string name="reaction_title">скорость\nреакции</string>
     <string name="acceleration_title">ускорение</string>
@@ -36,42 +36,43 @@
     <string name="reaction_result">%.2f с</string>
     <string name="acceleration_result">%.2f м/с&lt;sup&gt;&lt;small&gt;&lt;small&gt;2&lt;/small&gt;&lt;/small&gt;&lt;/sup&gt;</string>
 
-    <!--history_item.xml-->
+    <!-- row_history.xml -->
     <string name="speed_title_h">cкорость удара</string>
     <string name="reaction_title_h">cкорость реакции</string>
 
-    <!--menu_history.xml-->
+    <!-- menu_history.xml -->
     <string name="speed_menu">Cкорость удара</string>
     <string name="reaction_menu">Cкорость реакции</string>
     <string name="acceleration_menu">Ускорение</string>
     <string name="date_menu">Дата</string>
 
-    <!--dialog_history_settings.xml-->
+    <!-- dialog_history_settings.xml -->
+    <string name="settings">Настройки</string>
     <string name="doesnt_matter">не важно</string>
 
-    <!--community_logout.xml-->
+    <!-- community_logout.xml -->
     <string name="enter_username">Введите имя</string>
     <string name="login">Войти</string>
     <string name="load_previous_results">Загрузить предыдущие результаты</string>
 
-    <!--community_activity.xml-->
+    <!-- community_activity.xml -->
     <string name="best_results">Лучшие результаты</string>
     <string name="average_results">Средние результаты</string>
 
-    <!--menu_community.xml-->
+    <!-- menu_community.xml -->
     <string name="average_values">Средние значения</string>
     <string name="change_username">Сменить имя</string>
     <string name="logout">Выйти из сообщества</string>
 
-    <!--dialog_change_name.xml-->
+    <!-- dialog_change_name.xml -->
     <string name="enter_new_username">Введите новое имя</string>
 
-    <!--dialog_logout.xml-->
+    <!-- dialog_logout.xml -->
     <string name="logout_message">Ваши результаты будут скрыты из топа.\nВыйти?</string>
     <string name="yes">Да</string>
     <string name="no_cap">Нет</string>
 
-    <!--dialog_average_values.xml-->
+    <!-- dialog_average_values.xml -->
     <string name="average">Среднее</string>
     <string name="my">Моё</string>
     <string name="ok">ОК</string>

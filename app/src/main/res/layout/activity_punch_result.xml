@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.artioml.practice.PunchResultActivity"
+    tools:context="com.artioml.practice.activities.PunchResultActivity"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
@@ -92,19 +92,19 @@
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/result_item"
+            layout="@layout/row_result"
             android:id="@+id/speedResultItem" />
 
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/result_item"
+            layout="@layout/row_result"
             android:id="@+id/reactionResultItem" />
 
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/result_item"
+            layout="@layout/row_result"
             android:id="@+id/accelerationResultItem" />
     </LinearLayout>
 

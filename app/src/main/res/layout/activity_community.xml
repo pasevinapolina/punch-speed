@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorGreyLight"
     android:fitsSystemWindows="true"
-    tools:context="com.artioml.practice.CommunityActivity"
+    tools:context="com.artioml.practice.activities.CommunityActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
@@ -18,10 +18,7 @@
             android:id="@+id/settingsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/half_margin"
-            android:paddingTop="@dimen/half_margin"
+            android:padding="@dimen/half_margin"
             android:orientation="vertical">
 
             <RadioGroup
@@ -29,9 +26,9 @@
                 android:id="@+id/resultsSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginLeft="@dimen/fourth_margin"
-                android:layout_marginRight="@dimen/fourth_margin"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/half_margin"
+                android:layout_marginRight="@dimen/half_margin">
 
                 <RadioButton
                     android:id="@+id/bestResultsButton"
@@ -42,7 +39,7 @@
                     android:button="@null"
                     android:gravity="center"
                     android:text="@string/best_results"
-                    android:textColor="@color/colorGreyDarkest" />
+                    android:textColor="@color/colorGreyDarkest"/>
 
                 <RadioButton
                     android:id="@+id/avgResultsButton"
@@ -88,7 +85,7 @@
                 android:layout_height="@dimen/half_margin"
                 android:background="@drawable/community_item_background"/>
 
-            <include layout="@layout/community_item" />
+            <include layout="@layout/row_community" />
 
     </LinearLayout>
 

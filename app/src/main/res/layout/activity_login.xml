@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.artioml.practice.LoginActivity">
+    tools:context="com.artioml.practice.activities.LoginActivity">
 
     <View
         android:layout_width="match_parent"
@@ -33,13 +33,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/load_previous_results"
-        android:textColor="@color/colorGreyDarkest"
+        android:textColor="@color/colorTextBlack"
         android:layout_marginLeft="@dimen/double_margin"
-        android:layout_marginStart="@dimen/double_margin"
         android:layout_marginRight="@dimen/double_margin"
-        android:checked="true"
         android:layout_marginTop="@dimen/double_small_margin"
-        />
+        android:gravity="center_vertical"
+        android:checked="true"/>
 
     <View
         android:layout_width="match_parent"
@@ -55,9 +54,7 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:text="@string/login"
-        android:background="@drawable/button_background_red"
-        android:layout_below="@+id/prevResultsCheckBox"
-        android:layout_centerHorizontal="true"/>
+        android:background="@drawable/button_background_red"/>
 
 
     <View

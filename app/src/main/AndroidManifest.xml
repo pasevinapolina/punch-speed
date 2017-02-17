@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,45 +19,45 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LicenseActivity"
+            android:name=".activities.LicenseActivity"
             android:label=""
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artioml.practice.MainActivity"/>
+                android:value="com.artioml.practice.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".PunchResultActivity"
+            android:name=".activities.PunchResultActivity"
             android:label=""
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artioml.practice.MainActivity"/>
+                android:value="com.artioml.practice.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".HistoryActivity"
+            android:name=".activities.HistoryActivity"
             android:label="@string/history"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artioml.practice.MainActivity"/>
+                android:value="com.artioml.practice.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".CommunityActivity"
+            android:name=".activities.CommunityActivity"
             android:label="@string/community"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artioml.practice.MainActivity"/>
+                android:value="com.artioml.practice.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/community"
-            android:parentActivityName=".CommunityActivity">
+            android:parentActivityName=".activities.CommunityActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artioml.practice.CommunityActivity"/>
+                android:value="com.artioml.practice.activities.CommunityActivity"/>
         </activity>
     </application>
 

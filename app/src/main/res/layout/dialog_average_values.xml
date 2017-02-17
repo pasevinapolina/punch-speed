@@ -28,7 +28,7 @@
         android:padding="@dimen/normal_margin"
         android:orientation="vertical">
 
-        <include layout="@layout/settings_item" />
+        <include layout="@layout/item_settings" />
 
 
         <TableLayout

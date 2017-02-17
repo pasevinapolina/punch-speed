@@ -13,7 +13,8 @@
         android:paddingBottom="@dimen/half_margin"
         android:paddingTop="@dimen/half_margin"
         android:gravity="center_vertical|start"
-        android:layout_marginStart="22dp">
+        android:layout_marginStart="22dp"
+        android:layout_marginLeft="22dp">
 
         <TextView
             android:text="TextView"
@@ -65,5 +66,5 @@
     <view
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        class="com.artioml.practice.ResultSeekBar" />
+        class="com.artioml.practice.views.ResultSeekBar" />
 </LinearLayout>
