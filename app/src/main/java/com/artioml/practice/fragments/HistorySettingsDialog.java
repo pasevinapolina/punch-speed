@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.artioml.practice.data.PunchType;
+import com.artioml.practice.activities.HistoryActivity;
+import com.artioml.practice.R;
+import com.artioml.practice.utils.PunchType;
 
 /**
  * Created by Artiom L on 27.01.2017.
@@ -78,7 +80,7 @@ public class HistorySettingsDialog extends Dialog {
         setOnDismissListener(new DialogInterface.OnDismissListener(){
             @Override
             public void onDismiss(DialogInterface dialog) {
-                ((HistoryActivity) context).onResume();
+                ((HistoryActivity)context).updateSettings(); //((HistoryActivity) context).onResume();
             }
         });
     }

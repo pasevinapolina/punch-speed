@@ -1,7 +1,8 @@
-package com.artioml.practice;
+package com.artioml.practice.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,11 +15,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.artioml.practice.data.DatabaseDescription;
+import com.artioml.practice.interfaces.SettingsChangeListener;
+import com.artioml.practice.interfaces.impl.HistorySettingsChangeListener;
+import com.artioml.practice.views.ItemDivider;
+import com.artioml.practice.R;
+import com.artioml.practice.adapters.HistoryAdapter;
 import com.artioml.practice.data.HistoryDatabaseProvider;
 import com.artioml.practice.data.HistoryProvider;
 import com.artioml.practice.data.DatabaseDescription.History;
-import com.artioml.practice.data.PunchType;
-import com.artioml.practice.data.Result;
+import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.models.Result;
+import com.artioml.practice.fragments.HistorySettingsDialog;
 import com.artioml.practice.inject.ServiceLocator;
 
 import java.util.ArrayList;
@@ -30,16 +38,14 @@ import java.util.ArrayList;
 public class HistoryActivity extends AppCompatActivity {
 
     private static final String HISTORY_SETTINGS = "historySettings";
-    private static final String HAND = "pref_hand";
-    private static final String GLOVES = "pref_gloves";
-    private static final String POSITION = "pref_position";
-    private static final String PUNCH_TYPE = "pref_punchType";
     private static final String SORT_ORDER = "pref_sortOrder";
     private static final String _DESC = " DESC";
 
     private ArrayList<Result> history;
     private HistoryProvider historyProvider;
     private HistoryAdapter adapter;
+
+    private SettingsChangeListener settingsChangeListener;
     //private SQLiteDatabase db;
 
 //    private String hand;
@@ -53,9 +59,10 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        historyProvider = ServiceLocator.getHistoryProvider(null); //new HistoryDatabaseProvider(this);
+        historyProvider = ServiceLocator.getHistoryProvider(this); //new HistoryDatabaseProvider(null);
         history = new ArrayList<>();
 
+        settingsChangeListener = new HistorySettingsChangeListener(this, getWindow().getDecorView().getRootView());
         fillSettingsPanel();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.historyRecyclerView);
@@ -152,6 +159,11 @@ public class HistoryActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    public void updateSettings() {
+        fillSettingsPanel();
+        initHistory();
+    }
+
     private void initHistory () {
 
         historyProvider.clearHistory();
@@ -168,30 +180,33 @@ public class HistoryActivity extends AppCompatActivity {
                 getSharedPreferences(HISTORY_SETTINGS, Context.MODE_PRIVATE);
 
         historyProvider.setSortOrder(
-                sharedPreferences.getString(SORT_ORDER, History.COLUMN_DATE + _DESC));
+                sharedPreferences.getString(SORT_ORDER, DatabaseDescription.History.COLUMN_DATE + _DESC));
 
-        int punchType = sharedPreferences.getInt(PUNCH_TYPE, 0);
-        ((TextView) findViewById(R.id.typeHistoryTextView)).setText(getResources().getStringArray(
-                R.array.punch_type_history_list)[punchType]);
-
-        String hand = sharedPreferences.getString(HAND, PunchType.DOESNT_MATTER.getValue());
-        ((ImageView) findViewById(R.id.handsHistoryImageView)).setImageDrawable(
-                ContextCompat.getDrawable(this, getResources().getIdentifier(
-                        "ic_" + hand + "_hand", "drawable", getPackageName())));
-
-        String gloves = sharedPreferences.getString(GLOVES, PunchType.DOESNT_MATTER.getValue());
-        ((ImageView) findViewById(R.id.glovesHistoryImageView)).setImageDrawable(
-                ContextCompat.getDrawable(this, getResources().getIdentifier(
-                        "ic_gloves_" + gloves, "drawable", getPackageName())));
-
-        String position = sharedPreferences.getString(POSITION, PunchType.DOESNT_MATTER.getValue());
-        ((ImageView) findViewById(R.id.positionHistoryImageView)).setImageDrawable(
-                ContextCompat.getDrawable(this, getResources().getIdentifier(
-                        "ic_punch_" + position + "_step", "drawable", getPackageName())));
+        settingsChangeListener.fillSettingsPanel();
+        Result settings = ((HistorySettingsChangeListener)settingsChangeListener).getCurrentSettings();
 
         if(historyProvider instanceof HistoryDatabaseProvider) {
             ((HistoryDatabaseProvider) historyProvider)
-                    .setPunchParameters(punchType, hand, gloves, position);
+                    .setPunchParameters(settings.getPunchType(), settings.getHand(),
+                            settings.getGloves(), settings.getPosition());
+        }
+    }
+
+
+    class GetHistoryLoader extends AsyncTaskLoader<ArrayList<Result>>{
+
+        private HistoryProvider historyProvider;
+
+        public GetHistoryLoader(Context context) {
+            super(context);
+            historyProvider = ServiceLocator.getHistoryProvider(context);
+        }
+
+        @Override
+        public ArrayList<Result> loadInBackground() {
+            ArrayList<Result> historyList = new ArrayList<>();
+            historyList = historyProvider.getHistoryList();
+            return null;
         }
     }
 }

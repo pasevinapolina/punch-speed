@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -23,6 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
+import com.artioml.practice.fragments.MainSettingsDialog;
+import com.artioml.practice.R;
+import com.artioml.practice.interfaces.SettingsChangeListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,15 +70,6 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
 
         settingsChangeListener = new MainSettingsChangeListener(this, getWindow().getDecorView().getRootView());
         settingsChangeListener.fillSettingsPanel();
-
-//        AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
-//        attrBuilder.setUsage(AudioAttributes.USAGE_GAME);
-//
-//        SoundPool.Builder builder = new SoundPool.Builder();
-//        builder.setMaxStreams(1);
-//        builder.setAudioAttributes(attrBuilder.build());
-//
-//        soundPool = builder.build();
 
         createSoundPool();
 

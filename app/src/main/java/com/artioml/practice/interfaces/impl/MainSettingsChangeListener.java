@@ -1,15 +1,15 @@
-package com.artioml.practice;
+package com.artioml.practice.interfaces.impl;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.artioml.practice.data.PunchType;
+import com.artioml.practice.R;
+import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.interfaces.SettingsChangeListener;
 
 /**
  * Created by Polina P on 13.02.2017.

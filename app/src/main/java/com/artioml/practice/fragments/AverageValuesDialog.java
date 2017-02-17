@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.fragments;
 
 import android.app.Dialog;
 import android.graphics.Typeface;
@@ -11,8 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
+import com.artioml.practice.R;
+import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.data.CommunityProvider;
-import com.artioml.practice.data.Result;
+import com.artioml.practice.models.Result;
 import com.artioml.practice.inject.ServiceLocator;
 
 

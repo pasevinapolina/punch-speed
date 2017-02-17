@@ -1,5 +1,7 @@
 package com.artioml.practice.data;
 
+import com.artioml.practice.models.Result;
+
 import java.util.ArrayList;
 
 /**
@@ -12,4 +14,5 @@ public interface HistoryProvider {
     void clearHistory();
     ArrayList<Result> getHistoryList();
     void setSortOrder(String sortOrder);
+    void addResult(Result result);
 }

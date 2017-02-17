@@ -1,4 +1,4 @@
-package com.artioml.practice.data;
+package com.artioml.practice.models;
 
 /**
  * Created by user on 15.02.2017.

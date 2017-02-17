@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.artioml.practice.data.PunchType;
-import com.artioml.practice.data.Result;
+import com.artioml.practice.R;
+import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.models.Result;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public HistoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Заполнение макета list_item
         View view = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.history_item, parent, false);
+                parent.getContext()).inflate(R.layout.row_history, parent, false);
 
         // Создание ViewHolder для текущего элемента
         return (new ViewHolder(view));

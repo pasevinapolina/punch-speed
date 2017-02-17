@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

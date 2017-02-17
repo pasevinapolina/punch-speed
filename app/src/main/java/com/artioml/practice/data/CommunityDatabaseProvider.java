@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.artioml.practice.models.Result;
+
 /**
  * Created by Polina P on 06.02.2017.
  */

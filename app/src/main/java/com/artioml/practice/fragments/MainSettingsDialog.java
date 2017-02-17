@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,14 +17,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import com.artioml.practice.data.PunchType;
 
-import static com.artioml.practice.data.PunchType.GLOVES_OFF;
-import static com.artioml.practice.data.PunchType.GLOVES_ON;
-import static com.artioml.practice.data.PunchType.LEFT_HAND;
-import static com.artioml.practice.data.PunchType.RIGHT_HAND;
-import static com.artioml.practice.data.PunchType.WITHOUT_STEP;
-import static com.artioml.practice.data.PunchType.WITH_STEP;
+import com.artioml.practice.R;
+import com.artioml.practice.utils.PunchType;
+
+import static com.artioml.practice.utils.PunchType.GLOVES_OFF;
+import static com.artioml.practice.utils.PunchType.GLOVES_ON;
+import static com.artioml.practice.utils.PunchType.LEFT_HAND;
+import static com.artioml.practice.utils.PunchType.RIGHT_HAND;
+import static com.artioml.practice.utils.PunchType.WITHOUT_STEP;
+import static com.artioml.practice.utils.PunchType.WITH_STEP;
 
 /**
  * Created by Artiom L on 27.01.2017.

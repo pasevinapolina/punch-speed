@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,9 +18,18 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.artioml.practice.fragments.AverageValuesDialog;
+import com.artioml.practice.fragments.ChangeNameDialog;
+import com.artioml.practice.adapters.CommunityAdapter;
+import com.artioml.practice.views.ItemDivider;
+import com.artioml.practice.fragments.LogoutDialog;
+import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
+import com.artioml.practice.fragments.MainSettingsDialog;
+import com.artioml.practice.R;
+import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.data.CommunityListProvider;
 import com.artioml.practice.data.CommunityProvider;
-import com.artioml.practice.data.Result;
+import com.artioml.practice.models.Result;
 
 import java.util.ArrayList;
 
@@ -30,7 +39,7 @@ import java.util.ArrayList;
 
 public class CommunityActivity extends AppCompatActivity
         implements ChangeNameDialog.ChangeNameListener, LogoutDialog.LogoutListener,
-                    MainSettingsDialog.SettingsDialogListener {
+        MainSettingsDialog.SettingsDialogListener {
 
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";

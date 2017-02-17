@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.interfaces;
 
 /**
  * Created by Polina P on 15.02.2017.

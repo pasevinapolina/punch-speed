@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.artioml.practice.models.Result;
+import com.artioml.practice.utils.PunchType;
+
 import java.util.ArrayList;
 
 /**
@@ -39,6 +42,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
 
     public HistoryDatabaseProvider(Context context) {
         db = (PracticeDatabaseHelper.getInstance(context)).getReadableDatabase();
+        historyList = new ArrayList<>();
         values = new ArrayList<>();
         condition = new StringBuffer("");
     }
@@ -92,7 +96,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
     }
 
     private String[] prepareSelectionArgs() {
-        String cond = null;
+        String cond = "";
         String[] vals = null;
         if (condition.toString().compareTo("") != 0) {
             cond = condition.toString().substring(4);
@@ -138,6 +142,11 @@ public class HistoryDatabaseProvider implements HistoryProvider {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public void addResult(Result result) {
+
     }
 
     public String getHand() {

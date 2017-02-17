@@ -1,4 +1,4 @@
-package com.artioml.practice;
+package com.artioml.practice.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.artioml.practice.data.Result;
+import com.artioml.practice.R;
+import com.artioml.practice.models.Result;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
     @Override
     public CommunityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.community_item, parent, false);
+                parent.getContext()).inflate(R.layout.row_community, parent, false);
 
         return (new ViewHolder(view));
     }
