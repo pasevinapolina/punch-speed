@@ -63,7 +63,6 @@
             android:id="@+id/communityRecyclerView"
             android:layout_below="@id/settingsLayout"
             android:background="@android:color/white"
-            android:paddingTop="@dimen/fourth_margin"
             android:paddingBottom="@dimen/bottom_sheet_content_height"/>
 
     </RelativeLayout>
