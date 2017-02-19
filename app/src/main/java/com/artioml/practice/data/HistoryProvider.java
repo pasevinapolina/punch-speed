@@ -14,5 +14,7 @@ public interface HistoryProvider {
     void clearHistory();
     ArrayList<Result> getHistoryList();
     void setSortOrder(String sortOrder);
-    void addResult(Result result);
+
+    void setPunchParameters(int punchType, String hand,
+                            String gloves, String position);
 }

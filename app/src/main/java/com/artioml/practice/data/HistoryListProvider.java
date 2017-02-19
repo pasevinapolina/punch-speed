@@ -56,8 +56,8 @@ public class HistoryListProvider implements HistoryProvider {
     }
 
     @Override
-    public void addResult(Result result) {
-        historyList.add(result);
+    public void setPunchParameters(int punchType, String hand, String gloves, String position) {
+
     }
 
     public void setHistoryList(ArrayList<Result> historyList) {

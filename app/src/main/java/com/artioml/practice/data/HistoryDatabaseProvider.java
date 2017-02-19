@@ -78,6 +78,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
                     cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_DATE))
             ));
         }
+
         cursor.close();
     }
 
@@ -142,11 +143,6 @@ public class HistoryDatabaseProvider implements HistoryProvider {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    @Override
-    public void addResult(Result result) {
-
     }
 
     public String getHand() {
