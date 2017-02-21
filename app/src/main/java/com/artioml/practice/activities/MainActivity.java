@@ -3,7 +3,6 @@ package com.artioml.practice.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -14,9 +13,9 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.Menu;
@@ -28,13 +27,15 @@ import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
 import com.artioml.practice.fragments.MainSettingsDialog;
 import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
+import com.artioml.practice.preferences.DefaultPreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements MainSettingsDialog.SettingsDialogListener {
 
-    private static final String IS_FIRST_TIME = "pref_isFirstTime";
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String SETTINGS_DIALOG = "mainSettingsDialog";
 
     private final int ACCELERATION_THRESSHOLD = 20;
     private final int REACTION_THRESSHOLD = 10;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
     private ArrayList<Float> data;
     private SettingsChangeListener settingsChangeListener;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainSettingsDialog mainSettingsDialog = new MainSettingsDialog(MainActivity.this);
-                mainSettingsDialog.show();
+                MainSettingsDialog mainSettingsDialog = new MainSettingsDialog();
+                mainSettingsDialog.show(getSupportFragmentManager(), SETTINGS_DIALOG);
             }
         });
 
@@ -142,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sharedPreferences.getBoolean(IS_FIRST_TIME, true)) {
+        DefaultPreferenceManager preferenceManager = new DefaultPreferenceManager(this);
+        if(preferenceManager.getFirstTimePreference()) {
             Intent licenseIntent = new Intent(this, LicenseActivity.class);
             startActivity(licenseIntent);
-            sharedPreferences.edit().putBoolean(IS_FIRST_TIME, false).apply();
+            preferenceManager.setFirstTimePreference(false);
         }
     }
 
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
         @Override
         public void onSensorChanged(SensorEvent event) {
 
+            Log.i(TAG, "onSensorChanged");
             count++;
             float x = event.values[0] ;
             float y = event.values[1];
@@ -214,7 +217,9 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
     private float countSpeed(ArrayList<Float> data) {
         float speed = 0.00f;
         Collections.reverse(data);
-        data.remove(0);
+        if(data.size() > 0) {
+            data.remove(0);
+        }
         for (Float f : data) {
             speed += f;
             if (f < 3)
@@ -222,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements MainSettingsDialo
         }
         return speed / 50;
     }
-
-
 
     protected void createSoundPool() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

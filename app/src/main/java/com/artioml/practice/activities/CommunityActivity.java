@@ -1,5 +1,6 @@
 package com.artioml.practice.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.BottomSheetBehavior;
@@ -17,10 +18,15 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.artioml.practice.asynctasks.AsyncTaskContainer;
+import com.artioml.practice.asynctasks.CommunityListAsyncTask;
 import com.artioml.practice.fragments.AverageValuesDialog;
 import com.artioml.practice.fragments.ChangeNameDialog;
 import com.artioml.practice.adapters.CommunityAdapter;
+import com.artioml.practice.interfaces.ExecutionListener;
+import com.artioml.practice.models.Settings;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.fragments.LogoutDialog;
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
@@ -32,6 +38,7 @@ import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.models.Result;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by Polina P on 05.02.2017.
@@ -39,8 +46,9 @@ import java.util.ArrayList;
 
 public class CommunityActivity extends AppCompatActivity
         implements ChangeNameDialog.ChangeNameListener, LogoutDialog.LogoutListener,
-        MainSettingsDialog.SettingsDialogListener {
+        MainSettingsDialog.SettingsDialogListener, ExecutionListener {
 
+    private static final String SETTINGS_DIALOG = "settingsDialog";
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
     private static final String LOGOUT_DIALOG = "logoutDialog";
@@ -59,8 +67,22 @@ public class CommunityActivity extends AppCompatActivity
 
     private SettingsChangeListener settingsChangeListener;
 
+    private ProgressDialog progressDialog;
+    private AsyncTaskContainer taskContainer;
+
+    private Result currentResult;
+    private Settings settings;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public Object onRetainCustomNonConfigurationInstance() {
+        if(taskContainer != null) {
+            return taskContainer;
+        }
+        return super.onRetainCustomNonConfigurationInstance();
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
 
@@ -70,7 +92,7 @@ public class CommunityActivity extends AppCompatActivity
         communityProvider = new CommunityListProvider();
         communityResults = new ArrayList<>();
 
-        communityProvider.addDataSet();
+        communityProvider.getBestResults();
         communityResults = ((CommunityListProvider)communityProvider).getCommunityResults();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.communityRecyclerView);
@@ -83,8 +105,8 @@ public class CommunityActivity extends AppCompatActivity
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainSettingsDialog mainSettingsDialog = new MainSettingsDialog(CommunityActivity.this);
-                mainSettingsDialog.show();
+                MainSettingsDialog mainSettingsDialog = new MainSettingsDialog();
+                mainSettingsDialog.show(getSupportFragmentManager(), SETTINGS_DIALOG);
             }
         });
 
@@ -110,6 +132,8 @@ public class CommunityActivity extends AppCompatActivity
 
         setBottomSheet();
         fillBottomSheet(communityProvider.getBestUserResult());
+
+        restoreAsyncTask();
     }
 
     private void fillBottomSheet(Result result) {
@@ -128,6 +152,23 @@ public class CommunityActivity extends AppCompatActivity
         accelerationTextView.setText(Html.fromHtml(
                 getString(R.string.acceleration_result, result.getAcceleration())));
     }
+
+    private void restoreAsyncTask() {
+        taskContainer = (AsyncTaskContainer)getLastCustomNonConfigurationInstance();
+        if(taskContainer == null) {
+            taskContainer = new AsyncTaskContainer(this);
+            CommunityListAsyncTask communityListAsyncTask = new CommunityListAsyncTask();
+            taskContainer.setCommunityListTask(communityListAsyncTask);
+            taskContainer.getCommunityListTask().execute(settings);
+        }
+//            CommunityListAsyncTask communityListTask = taskContainer.getCommunityListTask();
+//            if(communityListTask != null) {
+//                if(communityListTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+//                    //taskContainer.addExecutionListener(this);
+//                }
+//            }
+    }
+
 
     @Override
     protected void onResume() {
@@ -150,6 +191,7 @@ public class CommunityActivity extends AppCompatActivity
             case R.id.average_values:
                 AverageValuesDialog averageValuesDialog = new AverageValuesDialog();
                 averageValuesDialog.show(manager, AVERAGE_VALUES_DIALOG);
+
                 break;
             case R.id.change_username:
                 new ChangeNameDialog().show(manager, CHANGE_NAME_DIALOG);
@@ -178,19 +220,25 @@ public class CommunityActivity extends AppCompatActivity
         TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
         myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
 
-
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//                Log.i("BottomSheet", "On slide");
-//            }
-//        });
+        bottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+                else if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        taskContainer.removeExecutionListener();
+    }
+
 
     @Override
     public void updateResult(String username) {
@@ -207,15 +255,32 @@ public class CommunityActivity extends AppCompatActivity
     @Override
     public void logout() {
         communityProvider.logout();
-//        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-//
-//        RecyclerView communityList = (RecyclerView) findViewById(R.id.communityRecyclerView);
-//        communityList.setPadding(communityList.getPaddingLeft(),
-//                communityList.getPaddingTop(), communityList.getPaddingRight(), 0);
     }
 
     @Override
     public void updateSettings() {
         settingsChangeListener.fillSettingsPanel();
+    }
+
+    @Override
+    public void onStarted() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(R.string.collecting_data);
+        progressDialog.setMessage(getResources().getString(R.string.collecting_data));
+        progressDialog.show();
+    }
+
+    @Override
+    public void onCompleted() {
+        if(progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        fillBottomSheet(currentResult);
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, R.string.community_error, Toast.LENGTH_LONG)
+                .show();
     }
 }
