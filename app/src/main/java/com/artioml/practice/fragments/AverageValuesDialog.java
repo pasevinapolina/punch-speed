@@ -4,11 +4,15 @@ import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
@@ -18,12 +22,12 @@ import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.models.Result;
 import com.artioml.practice.inject.ServiceLocator;
 
-
 /**
  * Created by Polina P on 06.02.2017.
  */
 public class AverageValuesDialog extends AppCompatDialogFragment {
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -45,13 +49,23 @@ public class AverageValuesDialog extends AppCompatDialogFragment {
         fillResultTable(rootView);
 
         builder.setView(rootView);
-
         builder.setCancelable(true);
+
         return builder.create();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Window window = getDialog().getWindow();
+        if(window != null) {
+            window.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
     private void fillResultTable(View rootView) {
-        CommunityProvider communityProvider = ServiceLocator.getCommunityProvider(null);
+        CommunityProvider communityProvider = ServiceLocator.getCommunityProvider();
 
         //1 column My Values
         Result userResult = communityProvider.getAverageUserResult();
@@ -67,7 +81,7 @@ public class AverageValuesDialog extends AppCompatDialogFragment {
                 getResources().getString(R.string.acceleration_result, userResult.getAcceleration())));
 
         //2 column Average Values
-        Result avgResult = communityProvider.getAverageResults();
+        Result avgResult = communityProvider.getAverageResult();
 
         TextView avgSpeedTextView = (TextView)rootView.findViewById(R.id.avgSpeedTextView);
         avgSpeedTextView.setText(getResources().getString(R.string.speed_result, avgResult.getSpeed()));
