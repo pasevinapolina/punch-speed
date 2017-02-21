@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -24,13 +25,15 @@ import com.artioml.practice.utils.PunchType;
  * Created by Polina P on 20.02.2017.
  */
 
-public class MainSettingsDialog extends AppCompatDialogFragment {
+public class MainSettingsDialog extends SettingsDialog {
 
     public static final String TAG = MainSettingsDialog.class.getSimpleName();
     private static final String MAIN_SETTINGS = "mainSettings";
 
     private EditText weightEditText;
     private Spinner spinner;
+
+    private View glovesWeight;
 
     private RadioButton leftHandButton;
     private RadioButton rightHandButton;
@@ -42,16 +45,6 @@ public class MainSettingsDialog extends AppCompatDialogFragment {
     private String hand;
     private String gloves;
     private String position;
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Dialog dialog = new Dialog(getActivity());
-        if(dialog.getWindow() != null) {
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-        return dialog;
-    }
 
     @Nullable
     @Override
@@ -68,118 +61,31 @@ public class MainSettingsDialog extends AppCompatDialogFragment {
                 getDialog().dismiss();
             }
         });
-        getDialog().setContentView(contentView);
-        return super.onCreateView(inflater, container, savedInstanceState);
+
+        final CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    switch (buttonView.getId()) {
+                        case (R.id.glovesOnButton):
+                            glovesWeight.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                            break;
+                        case (R.id.glovesOffButton):
+                            glovesWeight.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+                            break;
+                    }
+                }
+            };
+
+        glovesOnButton.setOnCheckedChangeListener(onCheckedChangeListener);
+        glovesOffButton.setOnCheckedChangeListener(onCheckedChangeListener);
+
+        return contentView;
     }
+
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        Window window = getDialog().getWindow();
-        if(window != null) {
-            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            window.setGravity(Gravity.TOP);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.i(TAG, "onDestroyView");
-        commitChanges();
-        ((SettingsDialogListener)getActivity()).updateSettings();
-        super.onDestroyView();
-    }
-
-    //    public MainSettingsDialog(final Context context) {
-//        //super(getContext, R.style.SettingsTheme);
-//        super(context);
-//
-//        this.context = context;
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        View contentView = getLayoutInflater().inflate(R.layout.dialog_main_settings, null);
-//        setContentView(contentView);
-//        setCancelable(true);
-//        getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        getWindow().setGravity(Gravity.TOP);
-//
-//        init();
-//
-//        glovesOnButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//        glovesOffButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//
-//        rightHandButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//        leftHandButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//
-//        withoutStepButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//        withStepButton.setOnCheckedChangeListener(onCheckedChangeListener);
-//
-//        setChecked();
-//
-//        findViewById(R.id.menuTopButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                commitChanges();
-//                dismiss();
-//            }
-//        });
-//
-//        setOnDismissListener(new DialogInterface.OnDismissListener(){
-//            @Override
-//            public void onDismiss(DialogInterface dialog) {
-//                ((SettingsDialogListener) context).updateSettings();
-//            }
-//        });
-//    }
-//
-//    final CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-//            new CompoundButton.OnCheckedChangeListener() {
-//
-//                @Override
-//                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                    switch (compoundButton.getId()) {
-//                        case (R.id.leftHandButton):
-//                            changeFilter(leftHandButton, rightHandButton, !b);
-//                            break;
-//                        case (R.id.rightHandButton):
-//                            changeFilter(leftHandButton, rightHandButton, b);
-//                            break;
-//                        case (R.id.withStepButton):
-//                            changeFilter(withStepButton, withoutStepButton, !b);
-//                            break;
-//                        case (R.id.withoutStepButton):
-//                            changeFilter(withStepButton, withoutStepButton, b);
-//                            break;
-//                        case (R.id.glovesOnButton):
-//                            changeFilter(glovesOffButton, glovesOnButton, b);
-//                            glovesWeight.setVisibility(b ? View.VISIBLE : View.GONE);
-//                            break;
-//                        case (R.id.glovesOffButton):
-//                            changeFilter(glovesOffButton, glovesOnButton, !b);
-//                            glovesWeight.setVisibility(!b ? View.VISIBLE : View.GONE);
-//                            break;
-//                    }
-//                }
-//            };
-//
-//    private void changeFilter(RadioButton firstButton, RadioButton secondButton, boolean b) {
-//        if (b) applyFilter(firstButton, secondButton);
-//        else applyFilter(secondButton, firstButton);
-//    }
-//
-//    private void applyFilter(RadioButton firstButton, RadioButton secondButton) {
-//        Drawable drawable = firstButton.getCompoundDrawables()[1];
-//        int color = ContextCompat.getColor(context, R.color.colorGreyDark);
-//        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-//        drawable = DrawableCompat.wrap(drawable);
-//        firstButton.setCompoundDrawables(null, drawable, null, null);
-//
-//        drawable = secondButton.getCompoundDrawables()[1];
-//        drawable.clearColorFilter();
-//        secondButton.setCompoundDrawables(null, drawable, null, null);
-//    }
-
-    private void init(View contentView) {
+    protected void init(View contentView) {
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(getActivity(), MAIN_SETTINGS);
         hand = preferenceManager.getHandPreference();
@@ -196,25 +102,33 @@ public class MainSettingsDialog extends AppCompatDialogFragment {
         weightEditText = (EditText) contentView.findViewById(R.id.weightEditText);
         weightEditText.setText(preferenceManager.getGlovesWeightPreference());
 
+        glovesWeight = (LinearLayout)contentView.findViewById(R.id.glovesWeight);
+
         spinner = (Spinner) contentView.findViewById(R.id.punchTypeSpinner);
         spinner.setSelection(preferenceManager.getPunchTypePreference());
     }
 
-    private void setChecked() {
+    @Override
+    protected void setChecked() {
         if (PunchType.getTypeByValue(hand) == PunchType.LEFT_HAND)
             leftHandButton.setChecked(true);
         else rightHandButton.setChecked(true);
 
-        if (PunchType.getTypeByValue(gloves) == PunchType.GLOVES_ON)
+        if (PunchType.getTypeByValue(gloves) == PunchType.GLOVES_ON) {
             glovesOnButton.setChecked(true);
-        else glovesOffButton.setChecked(true);
+            glovesWeight.setVisibility(View.VISIBLE);
+        } else {
+            glovesOffButton.setChecked(true);
+            glovesWeight.setVisibility(View.GONE);
+        }
 
         if (PunchType.getTypeByValue(position) == PunchType.WITH_STEP)
             withStepButton.setChecked(true);
         else withoutStepButton.setChecked(true);
     }
 
-    private void commitChanges(){
+    @Override
+    protected void commitChanges(){
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(getActivity(), MAIN_SETTINGS);
 
@@ -225,9 +139,5 @@ public class MainSettingsDialog extends AppCompatDialogFragment {
         preferenceManager.setPunchPreferences(hand, gloves,
                 weightEditText.getText().toString(), position,
                 spinner.getSelectedItemPosition());
-    }
-
-    public interface SettingsDialogListener {
-        void updateSettings();
     }
 }

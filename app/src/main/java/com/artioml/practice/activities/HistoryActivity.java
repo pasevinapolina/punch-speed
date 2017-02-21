@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.artioml.practice.fragments.SettingsDialog;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.interfaces.impl.HistorySettingsChangeListener;
 import com.artioml.practice.preferences.SettingsPreferenceManager;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 
 public class HistoryActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Result>> {
+        implements LoaderManager.LoaderCallbacks<List<Result>>, SettingsDialog.SettingsDialogListener {
 
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
@@ -122,6 +123,7 @@ public class HistoryActivity extends AppCompatActivity
         super.onResume();
     }
 
+    @Override
     public void updateSettings() {
         settingsChangeListener.fillSettingsPanel();
         //initHistory();

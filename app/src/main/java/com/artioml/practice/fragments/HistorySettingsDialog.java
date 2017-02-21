@@ -1,21 +1,14 @@
 package com.artioml.practice.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.artioml.practice.activities.HistoryActivity;
 import com.artioml.practice.R;
 import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.utils.PunchType;
@@ -24,7 +17,7 @@ import com.artioml.practice.utils.PunchType;
  * Created by Polina P on 20.02.2017.
  */
 
-public class HistorySettingsDialog extends AppCompatDialogFragment {
+public class HistorySettingsDialog extends SettingsDialog {
 
     public static final String TAG = HistorySettingsDialog.class.getSimpleName();
     private static final String HISTORY_SETTINGS = "historySettings";
@@ -45,28 +38,6 @@ public class HistorySettingsDialog extends AppCompatDialogFragment {
     private String gloves;
     private String position;
 
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Dialog dialog = new Dialog(getActivity());
-        if(dialog.getWindow() != null) {
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-        return dialog;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Window window = getDialog().getWindow();
-        if(window != null) {
-            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            window.setGravity(Gravity.TOP);
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -82,19 +53,11 @@ public class HistorySettingsDialog extends AppCompatDialogFragment {
                 getDialog().dismiss();
             }
         });
-        getDialog().setContentView(contentView);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return contentView;
     }
 
     @Override
-    public void onDestroyView() {
-        Log.i(TAG, "onDestroyView");
-        commitChanges();
-        ((HistoryActivity)getActivity()).updateSettings();
-        super.onDestroyView();
-    }
-
-    private void init(View contentView) {
+    protected void init(View contentView) {
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(getActivity(), HISTORY_SETTINGS);
         hand = preferenceManager.getHandPreference(PunchType.DOESNT_MATTER);
@@ -117,7 +80,8 @@ public class HistorySettingsDialog extends AppCompatDialogFragment {
         spinner.setSelection(preferenceManager.getPunchTypePreference());
     }
 
-    private void setChecked() {
+    @Override
+    protected void setChecked() {
         PunchType type = PunchType.getTypeByValue(hand);
         if (type == PunchType.LEFT_HAND)
             leftHandButton.setChecked(true);
@@ -140,7 +104,8 @@ public class HistorySettingsDialog extends AppCompatDialogFragment {
         else dmStepButton.setChecked(true);
     }
 
-    private void commitChanges(){
+    @Override
+    protected void commitChanges(){
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(getActivity(), HISTORY_SETTINGS);
 

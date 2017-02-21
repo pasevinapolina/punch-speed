@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.artioml.practice.fragments.SettingsDialog;
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
 import com.artioml.practice.fragments.MainSettingsDialog;
 import com.artioml.practice.R;
@@ -32,7 +33,7 @@ import com.artioml.practice.preferences.DefaultPreferenceManager;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class MainActivity extends AppCompatActivity implements MainSettingsDialog.SettingsDialogListener {
+public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String SETTINGS_DIALOG = "mainSettingsDialog";
