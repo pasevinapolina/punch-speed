@@ -1,11 +1,15 @@
 package com.artioml.practice.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -13,21 +17,18 @@ import android.widget.Spinner;
 
 import com.artioml.practice.activities.HistoryActivity;
 import com.artioml.practice.R;
+import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.utils.PunchType;
 
 /**
- * Created by Artiom L on 27.01.2017.
+ * Created by Polina P on 20.02.2017.
  */
 
-public class HistorySettingsDialog extends Dialog {
+public class HistorySettingsDialog extends AppCompatDialogFragment {
 
+    public static final String TAG = HistorySettingsDialog.class.getSimpleName();
     private static final String HISTORY_SETTINGS = "historySettings";
-    private static final String HAND = "pref_hand";
-    private static final String GLOVES = "pref_gloves";
-    private static final String POSITION = "pref_position";
-    private static final String PUNCH_TYPE = "pref_punchType";
 
-    private Context context;
     private Spinner spinner;
 
     private RadioButton leftHandButton;
@@ -44,111 +45,76 @@ public class HistorySettingsDialog extends Dialog {
     private String gloves;
     private String position;
 
-    public HistorySettingsDialog(final Context context) {
-        //super(context, R.style.MainSettingsTheme);
-        super(context);
 
-        this.context = context;
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View contentView = getLayoutInflater().inflate(R.layout.dialog_history_settings, null);
-        setContentView(contentView);
-        setCancelable(true);
-        getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        getWindow().setGravity(Gravity.TOP);
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Dialog dialog = new Dialog(getActivity());
+        if(dialog.getWindow() != null) {
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        return dialog;
+    }
 
-        init();
+    @Override
+    public void onStart() {
+        super.onStart();
 
-        /*glovesOnButton.setOnCheckedChangeListener(onCheckedChangeListener);
-        glovesOffButton.setOnCheckedChangeListener(onCheckedChangeListener);
+        Window window = getDialog().getWindow();
+        if(window != null) {
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.TOP);
+        }
+    }
 
-        rightHandButton.setOnCheckedChangeListener(onCheckedChangeListener);
-        leftHandButton.setOnCheckedChangeListener(onCheckedChangeListener);
-
-        withoutStepButton.setOnCheckedChangeListener(onCheckedChangeListener);
-        withStepButton.setOnCheckedChangeListener(onCheckedChangeListener);
-*/
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.dialog_history_settings, container, false);
+        init(contentView);
         setChecked();
 
-        findViewById(R.id.menuTopHistoryButton).setOnClickListener(new View.OnClickListener() {
+        contentView.findViewById(R.id.menuTopHistoryButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commitChanges();
-                dismiss();
+                getDialog().dismiss();
             }
         });
-
-        setOnDismissListener(new DialogInterface.OnDismissListener(){
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                ((HistoryActivity)context).updateSettings(); //((HistoryActivity) context).onResume();
-            }
-        });
+        getDialog().setContentView(contentView);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    /*final CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
-            new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    switch (compoundButton.getId()) {
-                        case (R.id.leftHandButton):
-                            changeFilter(leftHandButton, rightHandButton, !b);
-                            break;
-                        case (R.id.rightHandButton):
-                            changeFilter(leftHandButton, rightHandButton, b);
-                            break;
-                        case (R.id.withStepButton):
-                            changeFilter(withStepButton, withoutStepButton, !b);
-                            break;
-                        case (R.id.withoutStepButton):
-                            changeFilter(withStepButton, withoutStepButton, b);
-                            break;
-                        case (R.id.glovesOnButton):
-                            changeFilter(glovesOffButton, glovesOnButton, b);
-                            break;
-                        case (R.id.glovesOffButton):
-                            changeFilter(glovesOffButton, glovesOnButton, !b);
-                            break;
-                    }
-                }
-            };
-
-    private void changeFilter(RadioButton firstButton, RadioButton secondButton, boolean b) {
-        if (b) applyFilter(firstButton, secondButton);
-        else applyFilter(secondButton, firstButton);
+    @Override
+    public void onDestroyView() {
+        Log.i(TAG, "onDestroyView");
+        commitChanges();
+        ((HistoryActivity)getActivity()).updateSettings();
+        super.onDestroyView();
     }
 
-    private void applyFilter(RadioButton firstButton, RadioButton secondButton) {
-        Drawable drawable = firstButton.getCompoundDrawables()[1];
-        int color = ContextCompat.getColor(context, R.color.colorGreyDark);
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        drawable = DrawableCompat.wrap(drawable);
-        firstButton.setCompoundDrawables(null, drawable, null, null);
+    private void init(View contentView) {
+        SettingsPreferenceManager preferenceManager =
+                new SettingsPreferenceManager(getActivity(), HISTORY_SETTINGS);
+        hand = preferenceManager.getHandPreference(PunchType.DOESNT_MATTER);
+        gloves = preferenceManager.getGlovesPreference(PunchType.DOESNT_MATTER);
+        position = preferenceManager.getPositionPreference(PunchType.DOESNT_MATTER);
 
-        drawable = secondButton.getCompoundDrawables()[1];
-        drawable.clearColorFilter();
-        secondButton.setCompoundDrawables(null, drawable, null, null);
-    }*/
+        leftHandButton = (RadioButton) contentView.findViewById(R.id.leftHandHistoryButton);
+        rightHandButton = (RadioButton)contentView.findViewById(R.id.rightHandHistoryButton);
+        dmHandButton = (RadioButton)   contentView.findViewById(R.id.dmHandHistoryButton);
 
-    private void init() {
-        SharedPreferences sharedPreferences =
-                context.getSharedPreferences(HISTORY_SETTINGS, Context.MODE_PRIVATE);
-        hand = sharedPreferences.getString(HAND, PunchType.DOESNT_MATTER.getValue());
-        gloves = sharedPreferences.getString(GLOVES, PunchType.DOESNT_MATTER.getValue());
-        position = sharedPreferences.getString(POSITION, PunchType.DOESNT_MATTER.getValue());
+        glovesOnButton = (RadioButton) contentView.findViewById(R.id.glovesOnHistoryButton);
+        glovesOffButton = (RadioButton)contentView.findViewById(R.id.glovesOffHistoryButton);
+        glovesDmButton = (RadioButton) contentView.findViewById(R.id.glovesDmHistoryButton);
 
-        leftHandButton = (RadioButton) findViewById(R.id.leftHandHistoryButton);
-        rightHandButton = (RadioButton) findViewById(R.id.rightHandHistoryButton);
-        dmHandButton = (RadioButton) findViewById(R.id.dmHandHistoryButton);
-        glovesOnButton = (RadioButton) findViewById(R.id.glovesOnHistoryButton);
-        glovesOffButton = (RadioButton) findViewById(R.id.glovesOffHistoryButton);
-        glovesDmButton = (RadioButton) findViewById(R.id.glovesDmHistoryButton);
-        withStepButton = (RadioButton) findViewById(R.id.withStepHistoryButton);
-        withoutStepButton = (RadioButton) findViewById(R.id.withoutStepHistoryButton);
-        dmStepButton = (RadioButton) findViewById(R.id.dmStepHistoryButton);
+        withStepButton = (RadioButton) contentView.findViewById(R.id.withStepHistoryButton);
+        withoutStepButton = (RadioButton) contentView.findViewById(R.id.withoutStepHistoryButton);
+        dmStepButton = (RadioButton)   contentView.findViewById(R.id.dmStepHistoryButton);
 
-        spinner = (Spinner) findViewById(R.id.punchTypeHistorySpinner);
-        spinner.setSelection(sharedPreferences.getInt(PUNCH_TYPE, 0));
+        spinner = (Spinner) contentView.findViewById(R.id.punchTypeHistorySpinner);
+        spinner.setSelection(preferenceManager.getPunchTypePreference());
     }
 
     private void setChecked() {
@@ -175,19 +141,21 @@ public class HistorySettingsDialog extends Dialog {
     }
 
     private void commitChanges(){
-        context.getSharedPreferences(HISTORY_SETTINGS, Context.MODE_PRIVATE)
-                .edit()
-                .putString(HAND, leftHandButton.isChecked() ? PunchType.LEFT_HAND.getValue() :
-                        rightHandButton.isChecked() ? PunchType.RIGHT_HAND.getValue()
-                                : PunchType.DOESNT_MATTER.getValue())
-                .putString(GLOVES, glovesOnButton.isChecked() ? PunchType.GLOVES_ON.getValue() :
-                        glovesOffButton.isChecked() ? PunchType.GLOVES_OFF.getValue()
-                                : PunchType.DOESNT_MATTER.getValue())
-                .putString(POSITION, withStepButton.isChecked() ? PunchType.WITH_STEP.getValue() :
-                        withoutStepButton.isChecked() ? PunchType.WITHOUT_STEP.getValue()
-                                : PunchType.DOESNT_MATTER.getValue())
-                .putInt(PUNCH_TYPE, spinner.getSelectedItemPosition())
-                .apply();
+        SettingsPreferenceManager preferenceManager =
+                new SettingsPreferenceManager(getActivity(), HISTORY_SETTINGS);
+
+        PunchType hand =  leftHandButton.isChecked() ? PunchType.LEFT_HAND :
+                rightHandButton.isChecked() ? PunchType.RIGHT_HAND : PunchType.DOESNT_MATTER;
+
+        PunchType gloves = glovesOnButton.isChecked() ? PunchType.GLOVES_ON :
+                glovesOffButton.isChecked() ? PunchType.GLOVES_OFF : PunchType.DOESNT_MATTER;
+
+        PunchType position =  withStepButton.isChecked() ? PunchType.WITH_STEP :
+                withoutStepButton.isChecked() ? PunchType.WITHOUT_STEP : PunchType.DOESNT_MATTER;
+
+        preferenceManager.setPunchPreferences(hand, gloves, position, spinner.getSelectedItemPosition());
+
+        Log.i(TAG, "commitChanges");
     }
 
 }
