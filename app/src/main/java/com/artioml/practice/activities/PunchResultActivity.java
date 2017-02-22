@@ -14,7 +14,9 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +58,9 @@ public class PunchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_punch_result);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         speed = getIntent().getFloatExtra("speed", 45);
         reaction  = getIntent().getFloatExtra("reaction", 20);
@@ -171,7 +176,8 @@ public class PunchResultActivity extends AppCompatActivity {
         cv.put(History.COLUMN_REACTION, reaction);
         cv.put(History.COLUMN_ACCELERATION, acceleration);
         cv.put(History.COLUMN_DATE, sdf.format(calendar.getTime()));
-        db.insert(History.TABLE_NAME, null, cv);
+        long id = db.insert(History.TABLE_NAME, null, cv);
+        Log.i("INSERT", "" + id);
 
     }
 

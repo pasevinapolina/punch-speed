@@ -1,57 +1,78 @@
 package com.artioml.practice.activities;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.artioml.practice.R;
-import com.artioml.practice.data.CommunityProvider;
-import com.artioml.practice.inject.ServiceLocator;
+import com.artioml.practice.asynctasks.LoginAsyncTask;
+import com.artioml.practice.interfaces.TaskExecutionListener;
+import com.artioml.practice.preferences.LoginPrefernceManager;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements TaskExecutionListener {
+
+    public static final String TAG = LoginActivity.class.getSimpleName();
 
     private static final String COMMUNITY_STORAGE = "communityStorage";
     private static final String IS_LOGGED_IN = "pref_isLoggedIn";
     private static final String LOGIN = "pref_login";
 
-    private CommunityProvider communityProvider;
+    private ProgressDialog progressDialog;
     private EditText loginEditText;
+
+    private LoginAsyncTask loginTask;
+    private String userLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         Button loginButton = (Button) findViewById(R.id.loginButton);
         loginEditText = (EditText) findViewById(R.id.loginEditText);
 
-        communityProvider = ServiceLocator.getCommunityProvider(this);
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
 
-        if(sharedPreferences.getBoolean(IS_LOGGED_IN, false)) {
+        if(prefernceManager.getIsLoggedInPreference()) {
             finish();
         }
+
+        initLoginTask();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String login = loginEditText.getText().toString();
-                boolean isLoggedIn = communityProvider.loginUser(login);
-                if(isLoggedIn) {
-                    sharedPreferences
-                            .edit()
-                            .putBoolean(IS_LOGGED_IN, true)
-                            .putString(LOGIN, login)
-                            .apply();
-                    finish();
-                }
+                userLogin = loginEditText.getText().toString();
+                loginTask.execute(userLogin);
             }
         });
+
+        loginEditText.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            userLogin = textView.getText().toString();
+                            loginTask.execute(userLogin);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
     }
 
     @Override
@@ -66,5 +87,51 @@ public class LoginActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(LOGIN, loginEditText.getText().toString());
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        if(loginTask != null) {
+            Log.i(TAG, "onRetainCustomNonConfigurationInstance");
+            loginTask.removeTaskListener();
+        }
+        return loginTask;
+    }
+
+    @Override
+    public void onStarted() {
+        if(progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = ProgressDialog.show(LoginActivity.this, getString(R.string.loading),
+                    getString(R.string.please_wait));
+        }
+    }
+
+    @Override
+    public void onCompleted() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        prefernceManager.setLoginPreferences(true, userLogin);
+        finish();
+    }
+
+    @Override
+    public void onError() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        Toast.makeText(this, R.string.login_error, Toast.LENGTH_LONG)
+                .show();
+        loginTask = null;
+    }
+
+    private void initLoginTask() {
+        loginTask = (LoginAsyncTask)getLastCustomNonConfigurationInstance();
+        if(loginTask == null){
+            Log.i(TAG, "Create new task");
+            loginTask = new LoginAsyncTask();
+        }
+        loginTask.addTaskListener(this);
     }
 }

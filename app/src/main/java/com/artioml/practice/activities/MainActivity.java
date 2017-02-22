@@ -32,6 +32,8 @@ import com.artioml.practice.preferences.DefaultPreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener {
 
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settingsButton);
@@ -100,9 +103,11 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
                         SensorManager sensorManager =
                                 (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-                        sensorManager.registerListener(sensorEventListener,
-                                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
-                                1000);
+                        simulatePunch();
+//                        sensorManager.registerListener(sensorEventListener,
+//                                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
+//                                1000);
+
                     }
                 }, 2000);
             }
@@ -167,16 +172,16 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         SensorManager sensorManager =
                 (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        sensorManager.unregisterListener(sensorEventListener,
-                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+//        sensorManager.unregisterListener(sensorEventListener,
+//                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
     }
+
     private final SensorEventListener sensorEventListener = new SensorEventListener() {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-
             Log.i(TAG, "onSensorChanged");
-            count++;
+
             float x = event.values[0] ;
             float y = event.values[1];
             float z = event.values[2];
@@ -186,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
 
             // Вычислить текущее ускорение
             currentAcceleration = (float) Math.sqrt(x * x + y * y + z * z);
+
+            count++;
 
             if (currentAcceleration > 5)
                 data.add(currentAcceleration);
@@ -228,6 +235,49 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         }
         return speed / 50;
     }
+
+    private void simulatePunch() {
+        Random random = new Random(new Date().getTime());
+        float max = 20.0f;
+        float min = 10.0f;
+
+        for(int i = 0; i < 5; ++i) {
+            float x = random.nextFloat() * (max - min) + min;
+            float y = random.nextFloat() * (max - min) + min;
+            float z = random.nextFloat() * (max - min) + min;
+
+            currentAcceleration = (float) Math.sqrt(x * x + y * y + z * z);
+            Log.i(TAG, "simulatePunch: x=" + x + " y=" + y + " z=" + z + " acl=" + currentAcceleration);
+            count++;
+
+            if (currentAcceleration > 5)
+                data.add(currentAcceleration);
+        }
+        startPunchResultActivity();
+    }
+
+    private void startPunchResultActivity() {
+        // Вычислить изменение ускорения
+        //acceleration = currentAcceleration * (currentAcceleration - lastAcceleration);
+
+        maxAcceleration = Math.max(maxAcceleration, currentAcceleration);
+        //m = Math.max(m, currentAcceleration);
+
+        if (reaction == 0 && currentAcceleration > REACTION_THRESSHOLD)
+            reaction = count / 50;
+
+        if (maxAcceleration > ACCELERATION_THRESSHOLD) {
+
+            Intent punchResultIntent = new Intent(MainActivity.this, PunchResultActivity.class);
+
+            punchResultIntent.putExtra("speed", countSpeed(data));
+            punchResultIntent.putExtra("reaction", reaction);
+            punchResultIntent.putExtra("acceleration", maxAcceleration);
+
+            startActivity(punchResultIntent);
+        }
+    }
+
 
     protected void createSoundPool() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

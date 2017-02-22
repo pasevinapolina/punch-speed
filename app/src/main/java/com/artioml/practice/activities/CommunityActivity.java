@@ -3,14 +3,18 @@ package com.artioml.practice.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artioml.practice.asynctasks.AsyncTaskContainer;
-import com.artioml.practice.asynctasks.CommunityListAsyncTask;
+import com.artioml.practice.asynctasks.BestResultsAsyncTask;
 import com.artioml.practice.fragments.AverageValuesDialog;
 import com.artioml.practice.fragments.ChangeNameDialog;
 import com.artioml.practice.adapters.CommunityAdapter;
-import com.artioml.practice.interfaces.ExecutionListener;
+import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.models.Settings;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.fragments.LogoutDialog;
@@ -38,7 +42,6 @@ import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.models.Result;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Created by Polina P on 05.02.2017.
@@ -46,16 +49,14 @@ import java.util.Set;
 
 public class CommunityActivity extends AppCompatActivity
         implements ChangeNameDialog.ChangeNameListener, LogoutDialog.LogoutListener,
-        MainSettingsDialog.SettingsDialogListener, ExecutionListener {
+        MainSettingsDialog.SettingsDialogListener, TaskExecutionListener {
+
+    private static final String TAG = CommunityActivity.class.getSimpleName();
 
     private static final String SETTINGS_DIALOG = "settingsDialog";
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
     private static final String LOGOUT_DIALOG = "logoutDialog";
-
-    private static final String COMMUNITY_STORAGE = "communityStorage";
-    private static final String IS_LOGGED_IN = "pref_isLoggedIn";
-    private static final String LOGIN = "pref_login";
 
     private CommunityAdapter adapter;
     private ArrayList<Result> communityResults;
@@ -76,15 +77,18 @@ public class CommunityActivity extends AppCompatActivity
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         if(taskContainer != null) {
-            return taskContainer;
+            taskContainer.removeExecutionListener();
         }
-        return super.onRetainCustomNonConfigurationInstance();
+        return taskContainer;
     }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
         startActivity(loginIntent);
@@ -157,8 +161,8 @@ public class CommunityActivity extends AppCompatActivity
         taskContainer = (AsyncTaskContainer)getLastCustomNonConfigurationInstance();
         if(taskContainer == null) {
             taskContainer = new AsyncTaskContainer(this);
-            CommunityListAsyncTask communityListAsyncTask = new CommunityListAsyncTask();
-            taskContainer.setCommunityListTask(communityListAsyncTask);
+            BestResultsAsyncTask bestResultsAsyncTask = new BestResultsAsyncTask();
+            taskContainer.setCommunityListTask(bestResultsAsyncTask);
             taskContainer.getCommunityListTask().execute(settings);
         }
 //            CommunityListAsyncTask communityListTask = taskContainer.getCommunityListTask();
@@ -207,15 +211,30 @@ public class CommunityActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences sharedPreferences = getSharedPreferences(COMMUNITY_STORAGE, MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(IS_LOGGED_IN, true)) {
-
-        }
+//        SharedPreferences sharedPreferences = getSharedPreferences(COMMUNITY_STORAGE, MODE_PRIVATE);
+//        if(sharedPreferences.getBoolean(IS_LOGGED_IN, true)) {
+//
+//        }
     }
 
     private void setBottomSheet() {
         LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if(newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    Log.i(TAG, "BottomSheet: STATE_DRAGGING");
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
         TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
         myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
