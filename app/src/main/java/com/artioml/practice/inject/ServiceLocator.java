@@ -8,21 +8,33 @@ import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.data.HistoryDatabaseProvider;
 import com.artioml.practice.data.HistoryListProvider;
 import com.artioml.practice.data.HistoryProvider;
+import com.artioml.practice.utils.PunchSpeedApplication;
 
 /**
  * Created by Polina P on 06.02.2017.
  */
 
 public final class ServiceLocator {
-    public static HistoryProvider getHistoryProvider(Context context) {
+
+    private static Context context;
+
+    public static HistoryProvider getHistoryProvider() {
         if(context == null)
             return new HistoryListProvider();
-        return new HistoryDatabaseProvider(context);
+        return new HistoryDatabaseProvider(PunchSpeedApplication.getContext());
     }
 
-    public static CommunityProvider getCommunityProvider(Context context) {
+    public static CommunityProvider getCommunityProvider() {
         if(context == null)
             return new CommunityListProvider();
-        return new CommunityDatabaseProvider(context);
+        return new CommunityDatabaseProvider(PunchSpeedApplication.getContext());
+    }
+
+    public static void setContext(Context context) {
+        ServiceLocator.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

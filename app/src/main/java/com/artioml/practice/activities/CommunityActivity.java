@@ -2,13 +2,11 @@ package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,23 +23,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artioml.practice.asynctasks.AsyncTaskContainer;
-import com.artioml.practice.asynctasks.BestResultsAsyncTask;
 import com.artioml.practice.fragments.AverageValuesDialog;
 import com.artioml.practice.fragments.ChangeNameDialog;
 import com.artioml.practice.adapters.CommunityAdapter;
+import com.artioml.practice.inject.ServiceLocator;
 import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.models.Settings;
+import com.artioml.practice.preferences.LoginPrefernceManager;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.fragments.LogoutDialog;
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
 import com.artioml.practice.fragments.MainSettingsDialog;
 import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
-import com.artioml.practice.data.CommunityListProvider;
-import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.models.Result;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Polina P on 05.02.2017.
@@ -57,10 +55,11 @@ public class CommunityActivity extends AppCompatActivity
     private static final String CHANGE_NAME_DIALOG = "changeNameDialog";
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
     private static final String LOGOUT_DIALOG = "logoutDialog";
+    private static final String AVG_BUTTON_CHECKED = "checkedButton";
 
     private CommunityAdapter adapter;
-    private ArrayList<Result> communityResults;
-    private CommunityProvider communityProvider;
+    private List<Result> communityResults;
+    private boolean avgIsChecked;
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private RadioButton bestResultsButton;
@@ -73,11 +72,13 @@ public class CommunityActivity extends AppCompatActivity
 
     private Result currentResult;
     private Settings settings;
+    private String userLogin;
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         if(taskContainer != null) {
-            taskContainer.removeExecutionListener();
+            Log.i(TAG, "onRetainCustomNonConfigurationInstance");
+            taskContainer.removeTaskListeners();
         }
         return taskContainer;
     }
@@ -90,14 +91,15 @@ public class CommunityActivity extends AppCompatActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ServiceLocator.setContext(null);
+
         Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
         startActivity(loginIntent);
 
-        communityProvider = new CommunityListProvider();
-        communityResults = new ArrayList<>();
+        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        userLogin = prefernceManager.getLoginPreference();
 
-        communityProvider.getBestResults();
-        communityResults = ((CommunityListProvider)communityProvider).getCommunityResults();
+        communityResults = new ArrayList<>();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.communityRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -120,22 +122,25 @@ public class CommunityActivity extends AppCompatActivity
         bestResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fillBottomSheet(communityProvider.getBestUserResult());
+                restoreAsyncTask();
+                taskContainer.getBestResultsTask().execute(settings);
+                taskContainer.getUserBestResultTask().execute(userLogin);
             }
         });
 
         avgResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fillBottomSheet(communityProvider.getAverageUserResult());
+                restoreAsyncTask();
+                taskContainer.getAvgResultsTask().execute(settings);
+                taskContainer.getUserAvgResultAsyncTask().execute(userLogin);
             }
         });
 
         settingsChangeListener = new MainSettingsChangeListener(this, getWindow().getDecorView().getRootView());
-        settingsChangeListener.fillSettingsPanel();
+        settings = settingsChangeListener.fillSettingsPanel();
 
         setBottomSheet();
-        fillBottomSheet(communityProvider.getBestUserResult());
 
         restoreAsyncTask();
     }
@@ -144,7 +149,7 @@ public class CommunityActivity extends AppCompatActivity
         LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
 
         TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
-        loginTextView.setText(result.getUser());
+        loginTextView.setText(userLogin);
 
         TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
         speedTextView.setText(getString(R.string.speed_result, result.getSpeed()));
@@ -160,24 +165,19 @@ public class CommunityActivity extends AppCompatActivity
     private void restoreAsyncTask() {
         taskContainer = (AsyncTaskContainer)getLastCustomNonConfigurationInstance();
         if(taskContainer == null) {
-            taskContainer = new AsyncTaskContainer(this);
-            BestResultsAsyncTask bestResultsAsyncTask = new BestResultsAsyncTask();
-            taskContainer.setCommunityListTask(bestResultsAsyncTask);
-            taskContainer.getCommunityListTask().execute(settings);
+            taskContainer = new AsyncTaskContainer();
+            taskContainer.addTaskListeners(this);
         }
-//            CommunityListAsyncTask communityListTask = taskContainer.getCommunityListTask();
-//            if(communityListTask != null) {
-//                if(communityListTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-//                    //taskContainer.addExecutionListener(this);
-//                }
-//            }
     }
 
 
     @Override
     protected void onResume() {
-        settingsChangeListener.fillSettingsPanel();
         super.onResume();
+        settings = settingsChangeListener.fillSettingsPanel();
+
+        restoreAsyncTask();
+        restoreCommunityView();
     }
 
     @Override
@@ -205,16 +205,6 @@ public class CommunityActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-//        SharedPreferences sharedPreferences = getSharedPreferences(COMMUNITY_STORAGE, MODE_PRIVATE);
-//        if(sharedPreferences.getBoolean(IS_LOGGED_IN, true)) {
-//
-//        }
     }
 
     private void setBottomSheet() {
@@ -253,53 +243,96 @@ public class CommunityActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        taskContainer.removeExecutionListener();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        avgIsChecked = savedInstanceState.getBoolean(AVG_BUTTON_CHECKED);
+        Log.i(TAG, "AVG_BUTTON_CHECKED " + avgIsChecked);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(AVG_BUTTON_CHECKED, avgResultsButton.isChecked());
+
+    }
 
     @Override
-    public void updateResult(String username) {
-        communityProvider.setCurrentLogin(username);
-        Result currentResult;
-        if(bestResultsButton.isChecked()) {
-            currentResult = communityProvider.getBestUserResult();
-        } else {
-            currentResult = communityProvider.getAverageUserResult();
-        }
-        fillBottomSheet(currentResult);
+    public void updateLogin(String username) {
+        userLogin = username;
+        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        prefernceManager.setLoginPreferences(true, username);
+        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
+        loginTextView.setText(userLogin);
     }
 
     @Override
     public void logout() {
-        communityProvider.logout();
+        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        prefernceManager.setLoginPreferences(false, null);
+        Intent mainActivity = new Intent(CommunityActivity.this, MainActivity.class);
+        startActivity(mainActivity);
     }
 
     @Override
     public void updateSettings() {
-        settingsChangeListener.fillSettingsPanel();
+        settings = settingsChangeListener.fillSettingsPanel();
     }
 
     @Override
     public void onStarted() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(R.string.collecting_data);
-        progressDialog.setMessage(getResources().getString(R.string.collecting_data));
-        progressDialog.show();
+        if(progressDialog == null) {
+            progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
+        }
     }
 
     @Override
-    public void onCompleted() {
-        if(progressDialog != null) {
+    public void onCompleted(Object... result) {
+        if(progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        fillBottomSheet(currentResult);
+        if(result != null) {
+            if(result[0] instanceof Result) {
+                fillBottomSheet((Result) result[0]);
+            }
+            else if(result[0] instanceof List){
+                onCommunityTaskCompleted((List<Result>)result[0]);
+            }
+        }
+        taskContainer = null;
     }
 
     @Override
     public void onError() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
         Toast.makeText(this, R.string.community_error, Toast.LENGTH_LONG)
                 .show();
+        taskContainer = null;
+    }
+
+    private void onCommunityTaskCompleted(List<Result> resultList) {
+        communityResults.clear();
+        if(resultList != null) {
+            communityResults.addAll(resultList);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void restoreCommunityView() {
+        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        userLogin = prefernceManager.getLoginPreference();
+
+        if(avgIsChecked) {
+            avgResultsButton.setChecked(true);
+            taskContainer.getAvgResultsTask().execute(settings);
+            taskContainer.getUserAvgResultAsyncTask().execute(userLogin);
+        } else {
+            bestResultsButton.setChecked(true);
+            taskContainer.getBestResultsTask().execute(settings);
+            taskContainer.getUserBestResultTask().execute(userLogin);
+        }
     }
 }

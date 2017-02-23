@@ -1,6 +1,7 @@
 package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,8 +24,6 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
-    private static final String COMMUNITY_STORAGE = "communityStorage";
-    private static final String IS_LOGGED_IN = "pref_isLoggedIn";
     private static final String LOGIN = "pref_login";
 
     private ProgressDialog progressDialog;
@@ -46,7 +45,6 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
         loginEditText = (EditText) findViewById(R.id.loginEditText);
 
         final LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
-
         if(prefernceManager.getIsLoggedInPreference()) {
             finish();
         }
@@ -107,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
     }
 
     @Override
-    public void onCompleted() {
+    public void onCompleted(Object... result) {
         if(progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }

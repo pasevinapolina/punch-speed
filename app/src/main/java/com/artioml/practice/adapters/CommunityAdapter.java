@@ -14,7 +14,7 @@ import com.artioml.practice.models.Result;
 import java.util.List;
 
 /**
- * Created by user on 07.02.2017.
+ * Created by Polina P on 07.02.2017.
  */
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.ViewHolder> {

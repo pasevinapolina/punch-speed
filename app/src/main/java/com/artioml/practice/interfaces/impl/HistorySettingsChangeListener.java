@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.models.Result;
+import com.artioml.practice.models.Settings;
 import com.artioml.practice.utils.PunchType;
 
 /**
@@ -34,7 +35,7 @@ public class HistorySettingsChangeListener implements SettingsChangeListener {
     }
 
     @Override
-    public void fillSettingsPanel() {
+    public Settings fillSettingsPanel() {
         SharedPreferences sharedPreferences =
                 activity.getSharedPreferences(HISTORY_SETTINGS, Context.MODE_PRIVATE);
 
@@ -58,6 +59,7 @@ public class HistorySettingsChangeListener implements SettingsChangeListener {
                         "ic_punch_" + position + "_step", "drawable", activity.getPackageName()));
 
         currentSettings = new Result(punchType, hand, gloves, "", position, 0, 0, 0, "");
+        return new Settings(punchType, hand, gloves, position);
     }
 
     public Result getCurrentSettings() {

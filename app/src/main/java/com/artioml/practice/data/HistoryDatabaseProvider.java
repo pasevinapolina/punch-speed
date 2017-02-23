@@ -5,12 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.artioml.practice.models.Result;
+import com.artioml.practice.models.Settings;
 import com.artioml.practice.utils.PunchType;
 
 import java.util.ArrayList;
 
 /**
- * Created by user on 06.02.2017.
+ * Created by Polina P on 06.02.2017.
  */
 
 public class HistoryDatabaseProvider implements HistoryProvider {
@@ -48,7 +49,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
     }
 
     @Override
-    public void addDataSet() {
+    public void getData() {
 
         values = new ArrayList<>();
         condition = new StringBuffer("");
@@ -89,6 +90,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
 
     @Override
     public ArrayList<Result> getHistoryList() {
+        getData();
         return historyList;
     }
 
@@ -129,12 +131,12 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         }
     }
 
-    public void setPunchParameters(int punchType, String hand,
-                                   String gloves, String position) {
-        this.punchType = punchType;
-        this.hand = hand;
-        this.gloves = gloves;
-        this.position = position;
+    @Override
+    public void setPunchParameters(Settings settings) {
+        this.punchType = settings.getPunchType();
+        this.hand = settings.getHand();
+        this.gloves = settings.getGloves();
+        this.position = settings.getPosition();
     }
 
     public String getSortOrder() {

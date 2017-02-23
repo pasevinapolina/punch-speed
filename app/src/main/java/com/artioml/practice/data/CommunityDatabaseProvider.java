@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.artioml.practice.models.Result;
+import com.artioml.practice.models.Settings;
+
+import java.util.ArrayList;
 
 /**
  * Created by Polina P on 06.02.2017.
@@ -24,7 +27,10 @@ public class CommunityDatabaseProvider implements CommunityProvider {
     }
 
     @Override
-    public void addDataSet() {
+    public ArrayList<Result> getBestResults() {
+        ArrayList<Result> results = new ArrayList<>();
+
+        return results;
 
     }
 
@@ -51,17 +57,17 @@ public class CommunityDatabaseProvider implements CommunityProvider {
 
     @Override
     public boolean loginUser(String login) {
-        return true;
+        return login.equals("hello");
     }
 
     @Override
     public String getCurrentLogin() {
-        return null;
+        return "";
     }
 
     @Override
-    public void setCurrentLogin(String newLogin) {
-
+    public boolean setCurrentLogin(String newLogin) {
+        return true;
     }
 
     @Override
@@ -71,16 +77,26 @@ public class CommunityDatabaseProvider implements CommunityProvider {
 
     @Override
     public Result getBestUserResult() {
-        return null;
+        return new Result();
     }
 
     @Override
     public Result getAverageUserResult() {
-        return null;
+        return new Result();
     }
 
     @Override
-    public Result getAverageResults() {
-        return null;
+    public Result getAverageCommunityResult() {
+        return new Result();
+    }
+
+    @Override
+    public ArrayList<Result> getAverageResults(Settings settings) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void setPunchParameters(Settings settings) {
+
     }
 }

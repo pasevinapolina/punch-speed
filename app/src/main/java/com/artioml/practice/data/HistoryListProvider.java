@@ -1,6 +1,7 @@
 package com.artioml.practice.data;
 
 import com.artioml.practice.models.Result;
+import com.artioml.practice.models.Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class HistoryListProvider implements HistoryProvider {
     }
 
     @Override
-    public void addDataSet() {
+    public void getData() {
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd HH.mm.ss", Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
 
@@ -47,6 +48,7 @@ public class HistoryListProvider implements HistoryProvider {
 
     @Override
     public ArrayList<Result> getHistoryList() {
+        getData();
         return historyList;
     }
 
@@ -56,7 +58,7 @@ public class HistoryListProvider implements HistoryProvider {
     }
 
     @Override
-    public void setPunchParameters(int punchType, String hand, String gloves, String position) {
+    public void setPunchParameters(Settings settings) {
 
     }
 

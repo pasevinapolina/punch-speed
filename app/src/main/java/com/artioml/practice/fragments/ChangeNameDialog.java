@@ -3,16 +3,12 @@ package com.artioml.practice.fragments;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artioml.practice.R;
 
@@ -35,7 +31,7 @@ public class ChangeNameDialog extends AppCompatDialogFragment {
             public void onClick(View v) {
                 EditText usernameEditText = (EditText) inflater.findViewById(R.id.usernameEditText);
                 ChangeNameListener activity = (ChangeNameListener)getActivity();
-                activity.updateResult(usernameEditText.getText().toString());
+                activity.updateLogin(usernameEditText.getText().toString());
                 dismiss();
             }
         });
@@ -57,6 +53,6 @@ public class ChangeNameDialog extends AppCompatDialogFragment {
     }
 
     public interface ChangeNameListener {
-        void updateResult(String username);
+        void updateLogin(String username);
     }
 }

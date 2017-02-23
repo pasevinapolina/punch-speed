@@ -38,4 +38,9 @@
     <dimen name="bottom_sheet_height">124dp</dimen>
     <dimen name="bottom_sheet_peek_height">60dp</dimen>
     <dimen name="bottom_sheet_content_height">50dp</dimen>
+
+    <!-- Elevations -->
+    <dimen name="bottom_sheet_elevation">16dp</dimen>
+    <dimen name="button_elevation">2dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
 </resources>

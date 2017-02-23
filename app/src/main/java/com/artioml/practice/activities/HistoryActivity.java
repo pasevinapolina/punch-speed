@@ -1,7 +1,6 @@
 package com.artioml.practice.activities;
 
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,12 +11,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.artioml.practice.fragments.SettingsDialog;
+import com.artioml.practice.inject.ServiceLocator;
 import com.artioml.practice.interfaces.SettingsChangeListener;
+import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.interfaces.impl.HistorySettingsChangeListener;
+import com.artioml.practice.models.Settings;
 import com.artioml.practice.preferences.SettingsPreferenceManager;
-import com.artioml.practice.asynctasks.HistoryListLoader;
+import com.artioml.practice.asynctasks.HistoryListAsyncTask;
+import com.artioml.practice.utils.PunchSpeedApplication;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.R;
 import com.artioml.practice.adapters.HistoryAdapter;
@@ -33,7 +37,7 @@ import java.util.List;
  */
 
 public class HistoryActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Result>>, SettingsDialog.SettingsDialogListener {
+        implements SettingsDialog.SettingsDialogListener, TaskExecutionListener {
 
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
@@ -41,37 +45,37 @@ public class HistoryActivity extends AppCompatActivity
     private static final String SETTINGS_DIALOG = "historySettingsDialog";
     private static final String _DESC = " DESC";
 
-    public static final int LOADER_ID = 1;
-
-    private ArrayList<Result> history;
+    private ArrayList<Result> historyList;
     private HistoryAdapter adapter;
     private RecyclerView recyclerView;
 
+    private Settings settings;
     private SettingsChangeListener settingsChangeListener;
+
+    private HistoryListAsyncTask historyListTask;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        ServiceLocator.setContext(PunchSpeedApplication.getContext());
+
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        history = new ArrayList<>();
+        historyList = new ArrayList<>();
 
         settingsChangeListener = new HistorySettingsChangeListener(this, getWindow().getDecorView().getRootView());
-        settingsChangeListener.fillSettingsPanel();
+        settings = settingsChangeListener.fillSettingsPanel();
 
         recyclerView = (RecyclerView) findViewById(R.id.historyRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new HistoryAdapter(this, history);
+        adapter = new HistoryAdapter(this, historyList);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ItemDivider(this));
-
-        getSupportLoaderManager().initLoader(LOADER_ID, savedInstanceState, this);
-
-        //db = (PracticeDatabaseHelper.getInstance(this)).getReadableDatabase();
 
         //initHistory();
 
@@ -83,6 +87,17 @@ public class HistoryActivity extends AppCompatActivity
             }
         });
 
+        restoreAsyncTask();
+        historyListTask.execute(settings);
+
+    }
+
+    private void restoreAsyncTask() {
+        historyListTask = (HistoryListAsyncTask) getLastCustomNonConfigurationInstance();
+        if(historyListTask == null) {
+            historyListTask = new HistoryListAsyncTask();
+            historyListTask.addTaskListener(this);
+        }
     }
 
     @Override
@@ -111,47 +126,68 @@ public class HistoryActivity extends AppCompatActivity
                 preferenceManager.setSortOrderPreference(History.COLUMN_DATE + _DESC);
                 break;
         }
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+        //getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onResume() {
-        Log.i(TAG, "onResume");
-        settingsChangeListener.fillSettingsPanel();
-        //initHistory();
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
         super.onResume();
+        Log.i(TAG, "onResume");
+        settings = settingsChangeListener.fillSettingsPanel();
+
+        //restoreAsyncTask();
+        //historyListTask.execute(settings);
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        if(historyListTask != null) {
+            Log.i(TAG, "onRetainCustomNonConfigurationInstance");
+            historyListTask.removeTaskListener();
+        }
+        return historyListTask;
     }
 
     @Override
     public void updateSettings() {
-        settingsChangeListener.fillSettingsPanel();
-        //initHistory();
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+        settings = settingsChangeListener.fillSettingsPanel();
+        restoreAsyncTask();
+        historyListTask.execute(settings);
     }
 
     @Override
-    public Loader<List<Result>> onCreateLoader(int id, Bundle args) {
-        HistoryListLoader asyncTaskLoader = new HistoryListLoader(this, history);
-        asyncTaskLoader.forceLoad();
-        Log.i(TAG, "onCreateLoader");
-        return asyncTaskLoader;
+    public void onStarted() {
+        if(progressDialog == null) {
+            progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
+        }
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Result>> loader, List<Result> data) {
+    public void onCompleted(Object... result) {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
 
+        historyList.clear();
+        if(result != null) {
+            historyList.addAll((List<Result>) result[0]);
+        }
         adapter.notifyDataSetChanged();
-        recyclerView.setVisibility(View.VISIBLE);
-        Log.i(TAG, "onLoadFinish");
+
+        historyListTask = null;
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Result>> loader) {
-        recyclerView.setAdapter(null);
-        Log.i(TAG, "onLoaderReset");
+    public void onError() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        Toast.makeText(this, R.string.community_error, Toast.LENGTH_LONG)
+                .show();
+        historyListTask = null;
     }
 }
 

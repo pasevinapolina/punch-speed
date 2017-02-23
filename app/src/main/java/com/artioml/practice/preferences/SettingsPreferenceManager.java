@@ -21,7 +21,7 @@ public class SettingsPreferenceManager {
 
     private static SharedPreferences sharedPreferences;
 
-    public SettingsPreferenceManager(Context context, String preferenceFileKey) {
+    public SettingsPreferenceManager(final Context context, String preferenceFileKey) {
         sharedPreferences = context.getSharedPreferences(preferenceFileKey, Context.MODE_PRIVATE);
     }
 
@@ -33,8 +33,16 @@ public class SettingsPreferenceManager {
         return sharedPreferences.getString(HAND, PunchType.RIGHT_HAND.getValue());
     }
 
+    public String getHandPreference(PunchType defaultValue) {
+        return sharedPreferences.getString(HAND, defaultValue.getValue());
+    }
+
     public String getGlovesPreference() {
-        return sharedPreferences.getString(GLOVES, PunchType.GLOVES_OFF.getValue());
+        return sharedPreferences.getString(GLOVES, PunchType.GLOVES_ON.getValue());
+    }
+
+    public String getGlovesPreference(PunchType defaultValue) {
+        return sharedPreferences.getString(GLOVES, defaultValue.getValue());
     }
 
     public String getGlovesWeightPreference() {
@@ -42,7 +50,11 @@ public class SettingsPreferenceManager {
     }
 
     public String getPositionPreference() {
-        return sharedPreferences.getString(POSITION, PunchType.WITH_STEP.getValue());
+        return sharedPreferences.getString(POSITION, PunchType.WITHOUT_STEP.getValue());
+    }
+
+    public String getPositionPreference(PunchType defaultValue) {
+        return sharedPreferences.getString(POSITION, defaultValue.getValue());
     }
 
     public String getSortOrderPreference() {
@@ -53,5 +65,26 @@ public class SettingsPreferenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SORT_ORDER, sortOrder);
         editor.apply();
+    }
+
+    public void setPunchPreferences(PunchType hand, PunchType gloves,
+                                    PunchType position, int punchType) {
+        sharedPreferences.edit()
+                .putString(HAND, hand.getValue())
+                .putString(GLOVES, gloves.getValue())
+                .putString(POSITION, position.getValue())
+                .putInt(PUNCH_TYPE, punchType)
+                .apply();
+    }
+
+    public void setPunchPreferences(PunchType hand, PunchType gloves, String glovesWeight,
+                                    PunchType position, int punchType) {
+        sharedPreferences.edit()
+                .putString(HAND, hand.getValue())
+                .putString(GLOVES, gloves.getValue())
+                .putString(GLOVES_WEIGHT, glovesWeight)
+                .putString(POSITION, position.getValue())
+                .putInt(PUNCH_TYPE, punchType)
+                .apply();
     }
 }

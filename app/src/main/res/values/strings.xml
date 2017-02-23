@@ -76,5 +76,10 @@
     <string name="average">Среднее</string>
     <string name="my">Моё</string>
     <string name="ok">ОК</string>
+    <string name="collecting_data">Получение данных</string>
+    <string name="community_error">Ошибка при загрузке данных</string>
+    <string name="loading">Загрузка</string>
+    <string name="please_wait">Пожалуйста, подождите</string>
+    <string name="login_error">Имя пользователя введено неверно.</string>
 
 </resources>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@android:color/white">
+              android:background="@android:color/white"
+              tools:context="com.artioml.practice.activities.CommunityActivity">
 
     <TextView
         android:id="@+id/dialogTitle"
@@ -21,102 +23,108 @@
         android:layout_height="2dp"
         android:background="@color/colorPrimary" />
 
-    <LinearLayout
-        android:id="@+id/dialogContent"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/normal_margin"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <include layout="@layout/item_settings" />
-
-
-        <TableLayout
+        <LinearLayout
+            android:id="@+id/dialogContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/double_small_margin">
+            android:padding="@dimen/normal_margin"
+            android:orientation="vertical">
 
-            <TableRow
-                android:background="@android:color/white"
-                android:padding="@dimen/half_margin">
+            <include layout="@layout/item_settings" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/my"
-                    android:textColor="@color/colorTextBlack"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/average"
-                    android:textColor="@color/colorTextBlack"
-                    android:textStyle="bold"/>
-            </TableRow>
 
-            <TableRow
-                android:background="@color/colorGrey"
-                android:padding="@dimen/fourth_margin">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/speed_title"/>
-                <TextView
-                    android:id="@+id/mySpeedTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/speed_result"/>
-                <TextView
-                    android:id="@+id/avgSpeedTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/speed_result"/>
-            </TableRow>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_small_margin">
 
-            <TableRow
-                android:background="@android:color/white"
-                android:padding="@dimen/fourth_margin">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/reaction_title"/>
-                <TextView
-                    android:id="@+id/myReactionTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/reaction_result"/>
-                <TextView
-                    android:id="@+id/avgReactionTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/reaction_result"/>
-            </TableRow>
+                <TableRow
+                    android:background="@android:color/white"
+                    android:padding="@dimen/half_margin">
 
-            <TableRow
-                android:background="@color/colorGrey"
-                android:padding="@dimen/half_margin">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/acceleration_title"/>
-                <TextView
-                    android:id="@+id/myAccelerationTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/acceleration_result"/>
-                <TextView
-                    android:id="@+id/avgAccelerationTextView"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/acceleration_result"/>
-            </TableRow>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/my"
+                        android:textColor="@color/colorTextBlack"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/average"
+                        android:textColor="@color/colorTextBlack"
+                        android:textStyle="bold"/>
+                </TableRow>
 
-        </TableLayout>
+                <TableRow
+                    android:background="@color/colorGrey"
+                    android:padding="@dimen/fourth_margin">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/speed_title"/>
+                    <TextView
+                        android:id="@+id/mySpeedTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/speed_result"/>
+                    <TextView
+                        android:id="@+id/avgSpeedTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/speed_result"/>
+                </TableRow>
 
-    </LinearLayout>
+                <TableRow
+                    android:background="@android:color/white"
+                    android:padding="@dimen/fourth_margin">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/reaction_title"/>
+                    <TextView
+                        android:id="@+id/myReactionTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/reaction_result"/>
+                    <TextView
+                        android:id="@+id/avgReactionTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/reaction_result"/>
+                </TableRow>
+
+                <TableRow
+                    android:background="@color/colorGrey"
+                    android:padding="@dimen/half_margin">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/acceleration_title"/>
+                    <TextView
+                        android:id="@+id/myAccelerationTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/acceleration_result"/>
+                    <TextView
+                        android:id="@+id/avgAccelerationTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/acceleration_result"/>
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <View
         android:id="@+id/footerDivider"
@@ -128,9 +136,10 @@
         android:id="@+id/dialogOkButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/half_margin"
         android:text="@string/ok"
         android:textColor="@color/colorRedDark"
-        android:background="@drawable/dialog_button_background"
-        style="?android:attr/buttonBarButtonStyle"/>
+        style="?android:attr/buttonBarButtonStyle"
+        android:background="@drawable/dialog_button_background"/>
 
 </LinearLayout>

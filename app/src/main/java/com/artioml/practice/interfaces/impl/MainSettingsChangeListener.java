@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.artioml.practice.R;
+import com.artioml.practice.models.Settings;
+import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.utils.PunchType;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 
@@ -18,11 +20,6 @@ import com.artioml.practice.interfaces.SettingsChangeListener;
 public class MainSettingsChangeListener implements SettingsChangeListener {
 
     private static final String MAIN_SETTINGS = "mainSettings";
-    private static final String HAND = "pref_hand";
-    private static final String GLOVES = "pref_gloves";
-    private static final String GLOVES_WEIGHT = "pref_glovesWeight";
-    private static final String POSITION = "pref_position";
-    private static final String PUNCH_TYPE = "pref_punchType";
 
     private Activity activity;
     private View rootView;
@@ -33,30 +30,34 @@ public class MainSettingsChangeListener implements SettingsChangeListener {
     }
 
     @Override
-    public void fillSettingsPanel(){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(MAIN_SETTINGS, Context.MODE_PRIVATE);
+    public Settings fillSettingsPanel(){
+        //SharedPreferences sharedPreferences = activity.getSharedPreferences(MAIN_SETTINGS, Context.MODE_PRIVATE);
+        SettingsPreferenceManager preferenceManager = new SettingsPreferenceManager(activity, MAIN_SETTINGS);
 
+        int punchType = preferenceManager.getPunchTypePreference();
         ((TextView) rootView.findViewById(R.id.punchTypeView)).setText(activity.getResources().getStringArray(
-                R.array.punch_type_list)[sharedPreferences.getInt(PUNCH_TYPE, 0)]);
+                R.array.punch_type_list)[punchType]);
 
 
-        String hand = "ic_" + sharedPreferences.getString(HAND, PunchType.RIGHT_HAND.getValue()) + "_hand";
+        String hand = "ic_" + preferenceManager.getHandPreference() + "_hand";
         ((ImageView) rootView.findViewById(R.id.handView)).setImageResource( //ContextCompat.getDrawable(this,
                 activity.getResources().getIdentifier(hand, "drawable", activity.getPackageName()));
 
-        String gloves = "ic_gloves_" + sharedPreferences.getString(GLOVES, PunchType.GLOVES_OFF.getValue());
+        String gloves = "ic_gloves_" + preferenceManager.getGlovesPreference();
         ((ImageView) rootView.findViewById(R.id.glovesView)).setImageResource( //setImageDrawable(ContextCompat.getDrawable(this,
                 activity.getResources().getIdentifier(gloves, "drawable", activity.getPackageName()));
 
+        String glovesWeight = preferenceManager.getGlovesWeightPreference();
         if (gloves.compareTo("ic_gloves_off") == 0)
             rootView.findViewById(R.id.weightView).setVisibility(View.GONE);
         else {
             rootView.findViewById(R.id.weightView).setVisibility(View.VISIBLE);
-            ((TextView) rootView.findViewById(R.id.weightView)).setText(sharedPreferences.getString(GLOVES_WEIGHT, "80"));
+            ((TextView) rootView.findViewById(R.id.weightView)).setText(glovesWeight);
         }
 
-        String position = "ic_punch_" +  sharedPreferences.getString(POSITION, PunchType.WITH_STEP.getValue()) + "_step";
+        String position = "ic_punch_" +  preferenceManager.getPositionPreference() + "_step";
         ((ImageView) rootView.findViewById(R.id.positionView)).setImageResource( //setImageDrawable(ContextCompat.getDrawable(this,
                 activity.getResources().getIdentifier(position, "drawable", activity.getPackageName()));
+        return new Settings(punchType, hand, gloves, glovesWeight, position);
     }
 }

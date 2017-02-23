@@ -46,10 +46,18 @@ public class MainSettingsDialog extends SettingsDialog {
     private String gloves;
     private String position;
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Log.i("", "onCreateDialog");
+        return super.onCreateDialog(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.i("", "onCreateView");
         View contentView = inflater.inflate(R.layout.dialog_main_settings, container, false);
         init(contentView);
         setChecked();

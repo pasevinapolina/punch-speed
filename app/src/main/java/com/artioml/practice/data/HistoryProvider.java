@@ -1,6 +1,7 @@
 package com.artioml.practice.data;
 
 import com.artioml.practice.models.Result;
+import com.artioml.practice.models.Settings;
 
 import java.util.ArrayList;
 
@@ -10,11 +11,10 @@ import java.util.ArrayList;
 
 public interface HistoryProvider {
 
-    void addDataSet();
+    void getData();
     void clearHistory();
     ArrayList<Result> getHistoryList();
     void setSortOrder(String sortOrder);
 
-    void setPunchParameters(int punchType, String hand,
-                            String gloves, String position);
+    void setPunchParameters(Settings settings);
 }

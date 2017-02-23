@@ -1,5 +1,7 @@
 package com.artioml.practice.models;
 
+import com.artioml.practice.utils.PunchType;
+
 /**
  * Created by Artiom L on 29.01.2017.
  */
@@ -16,6 +18,18 @@ public class Result {
     private float acceleration;
     private String date;
     private String user;
+
+    public Result() {
+        this.punchType = 0;
+        this.hand = PunchType.RIGHT_HAND.getValue();
+        this.gloves = PunchType.GLOVES_ON.getValue();
+        this.glovesWeight = "80";
+        this.position = PunchType.WITHOUT_STEP.getValue();
+        this.speed = 80;
+        this.reaction = 20;
+        this.acceleration = 100;
+        this.date = "17.02.20 17.27.30";
+    }
 
     public Result(int punchType, String hand, String gloves, String glovesWeight, String position,
                   float speed, float reaction, float acceleration, String date) {
@@ -122,5 +136,21 @@ public class Result {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "punchType=" + punchType +
+                ", hand='" + hand + '\'' +
+                ", gloves='" + gloves + '\'' +
+                ", glovesWeight='" + glovesWeight + '\'' +
+                ", position='" + position + '\'' +
+                ", speed=" + speed +
+                ", reaction=" + reaction +
+                ", acceleration=" + acceleration +
+                ", date='" + date + '\'' +
+                ", user='" + user + '\'' +
+                '}';
     }
 }
