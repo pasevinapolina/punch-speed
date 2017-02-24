@@ -11,6 +11,7 @@ public class Settings {
     private String gloves;
     private String glovesWeight;
     private String position;
+    private String sortOrder;
 
     public Settings(int punchType, String hand, String gloves, String position) {
         this.punchType = punchType;
@@ -65,5 +66,13 @@ public class Settings {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

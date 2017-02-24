@@ -60,8 +60,6 @@ public class HistoryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        ServiceLocator.setContext(PunchSpeedApplication.getContext());
-
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -76,8 +74,6 @@ public class HistoryActivity extends AppCompatActivity
         adapter = new HistoryAdapter(this, historyList);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ItemDivider(this));
-
-        //initHistory();
 
         ImageButton settingsHistoryButton = (ImageButton) findViewById(R.id.settingsHistoryButton);
         settingsHistoryButton.setOnClickListener(new View.OnClickListener() {
@@ -111,22 +107,28 @@ public class HistoryActivity extends AppCompatActivity
 
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(this, HISTORY_SETTINGS);
+        String sortOrder = History.COLUMN_SPEED + _DESC;
 
         switch (item.getItemId()) {
             case (R.id.speed_sort):
-                preferenceManager.setSortOrderPreference(History.COLUMN_SPEED + _DESC);
+                sortOrder = History.COLUMN_SPEED + _DESC;
                 break;
             case (R.id.reaction_sort):
-                preferenceManager.setSortOrderPreference(History.COLUMN_REACTION + _DESC);
+                sortOrder = History.COLUMN_REACTION + _DESC;
                 break;
             case (R.id.acceleration_sort):
-                preferenceManager.setSortOrderPreference(History.COLUMN_ACCELERATION + _DESC);
+                sortOrder = History.COLUMN_ACCELERATION + _DESC;
                 break;
             case (R.id.date_sort):
-                preferenceManager.setSortOrderPreference(History.COLUMN_DATE + _DESC);
+                sortOrder = History.COLUMN_DATE + _DESC;
                 break;
         }
-        //getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+
+        settings.setSortOrder(sortOrder);
+        preferenceManager.setSortOrderPreference(sortOrder);
+
+        restoreAsyncTask();
+        historyListTask.execute(settings);
 
         return super.onOptionsItemSelected(item);
     }

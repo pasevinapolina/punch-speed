@@ -25,14 +25,14 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/dialogContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:padding="@dimen/normal_margin"
+            android:scrollbars="vertical"
             android:orientation="vertical">
 
             <include layout="@layout/item_settings" />
@@ -49,16 +49,19 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/my"
                         android:textColor="@color/colorTextBlack"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/average"
                         android:textColor="@color/colorTextBlack"
                         android:textStyle="bold"/>
@@ -70,16 +73,19 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/speed_title"/>
                     <TextView
                         android:id="@+id/mySpeedTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/speed_result"/>
                     <TextView
                         android:id="@+id/avgSpeedTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/speed_result"/>
                 </TableRow>
 
@@ -89,16 +95,19 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/reaction_title"/>
                     <TextView
                         android:id="@+id/myReactionTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/reaction_result"/>
                     <TextView
                         android:id="@+id/avgReactionTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/reaction_result"/>
                 </TableRow>
 
@@ -108,16 +117,19 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/acceleration_title"/>
                     <TextView
                         android:id="@+id/myAccelerationTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/acceleration_result"/>
                     <TextView
                         android:id="@+id/avgAccelerationTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/acceleration_result"/>
                 </TableRow>
 

@@ -91,8 +91,6 @@ public class CommunityActivity extends AppCompatActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ServiceLocator.setContext(null);
-
         Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
         startActivity(loginIntent);
 

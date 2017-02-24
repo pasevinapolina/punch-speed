@@ -37,6 +37,7 @@ public class HistoryListAsyncTask extends AsyncTask<Settings, Void, List<Result>
         super.onPreExecute();
         ServiceLocator.setContext(PunchSpeedApplication.getContext());
         historyProvider = ServiceLocator.getHistoryProvider();
+        taskListener.onStarted();
     }
 
     @Override
@@ -48,5 +49,14 @@ public class HistoryListAsyncTask extends AsyncTask<Settings, Void, List<Result>
             Log.i(TAG, "History list size: " + results.size());
         }
         return results;
+    }
+
+    @Override
+    protected void onPostExecute(List<Result> results) {
+        super.onPostExecute(results);
+        if(results == null) {
+            taskListener.onError();
+        }
+        taskListener.onCompleted(results);
     }
 }

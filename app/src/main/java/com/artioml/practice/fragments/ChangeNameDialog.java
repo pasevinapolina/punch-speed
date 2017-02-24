@@ -9,14 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.artioml.practice.R;
+import com.artioml.practice.asynctasks.ChangeLoginAsyncTask;
+import com.artioml.practice.interfaces.TaskExecutionListener;
 
 /**
  * Created by Polina P on 05.02.2017.
  */
 
-public class ChangeNameDialog extends AppCompatDialogFragment {
+public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExecutionListener {
+
+    private ChangeLoginAsyncTask changeLoginTask;
 
     @NonNull
     @Override
@@ -30,9 +35,8 @@ public class ChangeNameDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(View v) {
                 EditText usernameEditText = (EditText) inflater.findViewById(R.id.usernameEditText);
-                ChangeNameListener activity = (ChangeNameListener)getActivity();
-                activity.updateLogin(usernameEditText.getText().toString());
-                dismiss();
+                String newLogin = usernameEditText.getText().toString();
+                changeLoginTask.execute(newLogin);
             }
         });
 
@@ -44,12 +48,32 @@ public class ChangeNameDialog extends AppCompatDialogFragment {
             }
         });
 
+        changeLoginTask = new ChangeLoginAsyncTask();
+        changeLoginTask.addTaskListener(this);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(inflater);
 
         builder.setCancelable(true);
 
         return builder.create();
+    }
+
+    @Override
+    public void onStarted() {
+
+    }
+
+    @Override
+    public void onCompleted(Object... result) {
+        ChangeNameListener activity = (ChangeNameListener)getActivity();
+        activity.updateLogin((String)result[0]);
+        dismiss();
+    }
+
+    @Override
+    public void onError() {
+        //Toast.makeText(getDialog().getContext(), getString(R.string.community_error), )
     }
 
     public interface ChangeNameListener {

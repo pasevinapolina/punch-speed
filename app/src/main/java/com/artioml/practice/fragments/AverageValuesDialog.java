@@ -1,10 +1,11 @@
 package com.artioml.practice.fragments;
 
+
 import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.app.AlertDialog;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,16 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.artioml.practice.asynctasks.AverageResultsAsyncTask;
 import com.artioml.practice.asynctasks.AverageValuesAsyncTask;
 import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
 import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
-import com.artioml.practice.data.CommunityProvider;
 import com.artioml.practice.models.AverageValuePair;
 import com.artioml.practice.models.Result;
-import com.artioml.practice.inject.ServiceLocator;
 import com.artioml.practice.models.Settings;
 
 /**
@@ -54,7 +52,7 @@ public class AverageValuesDialog extends AppCompatDialogFragment implements Task
         SettingsChangeListener settingsChangeListener = new MainSettingsChangeListener(getActivity(), rootView);
         Settings settings = settingsChangeListener.fillSettingsPanel();
 
-        //setRetainInstance();
+        //setRetainInstance(true);
         avgAsyncTask = new AverageValuesAsyncTask();
         avgAsyncTask.addTaskListener(this);
         avgAsyncTask.execute(settings);
