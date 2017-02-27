@@ -1,12 +1,17 @@
 package com.artioml.practice.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.artioml.practice.utils.PunchType;
+
+import java.io.Serializable;
 
 /**
  * Created by Artiom L on 29.01.2017.
  */
 
-public class Result {
+public class Result implements Serializable, Parcelable {
 
     private int punchType;
     private String hand;
@@ -153,4 +158,49 @@ public class Result {
                 ", user='" + user + '\'' +
                 '}';
     }
+
+    protected Result(Parcel in) {
+        punchType = in.readInt();
+        hand = in.readString();
+        gloves = in.readString();
+        glovesWeight = in.readString();
+        position = in.readString();
+        speed = in.readFloat();
+        reaction = in.readFloat();
+        acceleration = in.readFloat();
+        date = in.readString();
+        user = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(punchType);
+        dest.writeString(hand);
+        dest.writeString(gloves);
+        dest.writeString(glovesWeight);
+        dest.writeString(position);
+        dest.writeFloat(speed);
+        dest.writeFloat(reaction);
+        dest.writeFloat(acceleration);
+        dest.writeString(date);
+        dest.writeString(user);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Result> CREATOR = new Parcelable.Creator<Result>() {
+        @Override
+        public Result createFromParcel(Parcel in) {
+            return new Result(in);
+        }
+
+        @Override
+        public Result[] newArray(int size) {
+            return new Result[size];
+        }
+    };
 }

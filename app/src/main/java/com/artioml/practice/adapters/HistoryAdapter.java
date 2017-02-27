@@ -14,6 +14,7 @@ import com.artioml.practice.R;
 import com.artioml.practice.utils.PunchType;
 import com.artioml.practice.models.Result;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,11 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
-    private final List<Result> history; // Поисковые запросы
+    private final ArrayList<Result> historyList;
     private Context context;
 
-    public HistoryAdapter(Context context, List<Result> history) {
-        this.history = history;
+    public HistoryAdapter(Context context, ArrayList<Result> historyList) {
+        this.historyList = historyList;
         this.context = context;
     }
 
@@ -78,7 +79,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(HistoryAdapter.ViewHolder holder, int position) {
 
-        Result currentResult = history.get(position);
+        Result currentResult = historyList.get(position);
 
         holder.punchTypeTextView.setText(context.getResources().getStringArray(
                 R.array.punch_type_list)[currentResult.getPunchType()]);
@@ -111,7 +112,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return history == null ? 0 : history.size();
+        return historyList == null ? 0 : historyList.size();
     }
 
+    public ArrayList<Result> getHistoryList() {
+        return historyList;
+    }
 }

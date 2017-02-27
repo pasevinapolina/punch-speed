@@ -24,14 +24,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.artioml.practice.fragments.SettingsDialog;
-import com.artioml.practice.inject.ServiceLocator;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.interfaces.impl.HistorySettingsChangeListener;
 import com.artioml.practice.models.Settings;
 import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.asynctasks.HistoryListAsyncTask;
-import com.artioml.practice.utils.PunchSpeedApplication;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.R;
 import com.artioml.practice.adapters.HistoryAdapter;
@@ -55,9 +53,10 @@ public class HistoryActivity extends AppCompatActivity
     private static final String SETTINGS_DIALOG = "historySettingsDialog";
     private static final String IS_LOADED = "isLoaded";
     private static final String KEY_RECYCLER_STATE = "recyclerState";
+    public static final String KEY_HISTORY_LIST = "historyList";
     private static final String _DESC = " DESC";
 
-    private ArrayList<Result> historyList = new ArrayList<>();
+    private ArrayList<Result> historyList;
     private HistoryAdapter adapter;
     private RecyclerView recyclerView;
     private Bundle mBundleRecyclerViewState;
@@ -77,6 +76,9 @@ public class HistoryActivity extends AppCompatActivity
 
         if(savedInstanceState != null) {
             isLoaded = savedInstanceState.getBoolean(IS_LOADED);
+            historyList = savedInstanceState.getParcelableArrayList(KEY_HISTORY_LIST);
+        } else {
+            historyList = new ArrayList<>();
         }
 
         settingsChangeListener = new HistorySettingsChangeListener(this, getWindow().getDecorView().getRootView());
@@ -102,17 +104,19 @@ public class HistoryActivity extends AppCompatActivity
 
     private void restoreAsyncTask() {
         historyListTask = (HistoryListAsyncTask) getLastCustomNonConfigurationInstance();
-        if(historyListTask == null) {
-            historyListTask = new HistoryListAsyncTask();
+        if(!isLoaded) {
+            if (historyListTask == null) {
+                historyListTask = new HistoryListAsyncTask();
+                historyListTask.addTaskListener(this);
+                if (!isLoaded) {
+                    historyListTask.execute(settings);
+                }
+            } else {
+                progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
+                        getString(R.string.collecting_data));
+            }
             historyListTask.addTaskListener(this);
-            //if(!isLoaded) {
-                historyListTask.execute(settings);
-            //}
-        } else {
-            progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
-                    getString(R.string.collecting_data));
         }
-        historyListTask.addTaskListener(this);
     }
 
     private void setActionBar() {
@@ -169,6 +173,7 @@ public class HistoryActivity extends AppCompatActivity
         settings.setSortOrder(sortOrder);
         preferenceManager.setSortOrderPreference(sortOrder, item.getOrder());
 
+        isLoaded = false;
         restoreAsyncTask();
 
         return super.onOptionsItemSelected(item);
@@ -204,6 +209,7 @@ public class HistoryActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_LOADED, isLoaded);
+        outState.putParcelableArrayList(KEY_HISTORY_LIST, adapter.getHistoryList());
     }
 
     @Override
@@ -233,6 +239,7 @@ public class HistoryActivity extends AppCompatActivity
     @Override
     public void updateSettings() {
         settings = settingsChangeListener.fillSettingsPanel();
+        isLoaded = false;
         restoreAsyncTask();
     }
 
@@ -272,7 +279,7 @@ public class HistoryActivity extends AppCompatActivity
 
     private void saveRecyclerViewState() {
         mBundleRecyclerViewState = new Bundle();
-        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        Parcelable listState =  recyclerView.getLayoutManager().onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
     }
 
