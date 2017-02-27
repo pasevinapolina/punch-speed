@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public interface HistoryProvider {
 
-    void getData();
-    void clearHistory();
+    long addResult(Result result);
     ArrayList<Result> getHistoryList();
-    void setSortOrder(String sortOrder);
+    void clearHistory();
 
+    void setSortOrder(String sortOrder);
     void setPunchParameters(Settings settings);
 }

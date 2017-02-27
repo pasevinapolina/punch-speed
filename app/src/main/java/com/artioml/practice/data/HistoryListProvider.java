@@ -30,7 +30,18 @@ public class HistoryListProvider implements HistoryProvider {
     }
 
     @Override
-    public void getData() {
+    public void clearHistory() {
+        historyList.clear();
+    }
+
+    @Override
+    public long addResult(Result result) {
+        historyList.add(result);
+        return historyList.size();
+    }
+
+    @Override
+    public ArrayList<Result> getHistoryList() {
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd HH.mm.ss", Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
 
@@ -39,16 +50,6 @@ public class HistoryListProvider implements HistoryProvider {
                 "80", WITH_STEP.getValue(), 45, 20, 30, sdf.format(calendar.getTime())));
         historyList.add(new Result(1, LEFT_HAND.getValue(), GLOVES_ON.getValue(),
                 "100", WITHOUT_STEP.getValue(), 45, 20, 30, sdf.format(calendar.getTime())));
-    }
-
-    @Override
-    public void clearHistory() {
-        historyList.clear();
-    }
-
-    @Override
-    public ArrayList<Result> getHistoryList() {
-        getData();
         return historyList;
     }
 

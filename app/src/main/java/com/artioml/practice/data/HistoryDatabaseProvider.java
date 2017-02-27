@@ -1,5 +1,6 @@
 package com.artioml.practice.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +9,10 @@ import com.artioml.practice.models.Result;
 import com.artioml.practice.models.Settings;
 import com.artioml.practice.utils.PunchType;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by Polina P on 06.02.2017.
@@ -34,7 +38,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
     private static final String _DESC = " DESC";
     private static final String  _ASC = " ASC";
 
-    private SQLiteDatabase db;
+    private PracticeDatabaseHelper dbHelper;
     private StringBuffer condition;
     private ArrayList<String> values;
 
@@ -45,7 +49,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
     private String sortOrder;
 
     public HistoryDatabaseProvider(Context context) {
-        db = (PracticeDatabaseHelper.getInstance(context)).getReadableDatabase();
+        dbHelper = PracticeDatabaseHelper.getInstance(context);
         historyList = new ArrayList<>();
         values = new ArrayList<>();
         condition = new StringBuffer("");
@@ -53,14 +57,37 @@ public class HistoryDatabaseProvider implements HistoryProvider {
     }
 
     @Override
-    public void getData() {
+    public void clearHistory() {
+        historyList.clear();
+    }
 
+    @Override
+    public long addResult(Result result) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseDescription.History.COLUMN_PUNCH_TYPE, result.getPunchType());
+        cv.put(DatabaseDescription.History.COLUMN_HAND, result.getHand());
+        cv.put(DatabaseDescription.History.COLUMN_GLOVES, result.getGloves());
+        cv.put(DatabaseDescription.History.COLUMN_GLOVES_WEIGHT, result.getGlovesWeight());
+        cv.put(DatabaseDescription.History.COLUMN_POSITION, result.getPosition());
+        cv.put(DatabaseDescription.History.COLUMN_SPEED, result.getSpeed());
+        cv.put(DatabaseDescription.History.COLUMN_REACTION, result.getReaction());
+        cv.put(DatabaseDescription.History.COLUMN_ACCELERATION, result.getAcceleration());
+        cv.put(DatabaseDescription.History.COLUMN_DATE, result.getDate());
+        long id = db.insert(DatabaseDescription.History.TABLE_NAME, null, cv);
+        return id;
+    }
+
+    @Override
+    public ArrayList<Result> getHistoryList() {
         values = new ArrayList<>();
         condition = new StringBuffer("");
 
         parseParameters();
         String[] vals = prepareSelectionArgs();
 
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 DatabaseDescription.History.TABLE_NAME,     // таблица
                 DB_PROJECTION,             // столбцы
@@ -71,30 +98,9 @@ public class HistoryDatabaseProvider implements HistoryProvider {
                 sortOrder);             // порядок сортировки
 
         while (cursor.moveToNext()) {
-            historyList.add(new Result(
-                    cursor.getInt(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_PUNCH_TYPE)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_HAND)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_GLOVES)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_GLOVES_WEIGHT)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_POSITION)),
-                    cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_SPEED)),
-                    cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_REACTION)),
-                    cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_ACCELERATION)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_DATE))
-            ));
+            historyList.add(extractResult(cursor));
         }
-
         cursor.close();
-    }
-
-    @Override
-    public void clearHistory() {
-        historyList.clear();
-    }
-
-    @Override
-    public ArrayList<Result> getHistoryList() {
-        getData();
         return historyList;
     }
 
@@ -133,6 +139,19 @@ public class HistoryDatabaseProvider implements HistoryProvider {
             condition.append("AND position = ? ");
             values.add(position);
         }
+    }
+
+    private Result extractResult(Cursor cursor) {
+        return new Result(
+                cursor.getInt(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_PUNCH_TYPE)),
+                cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_HAND)),
+                cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_GLOVES)),
+                cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_GLOVES_WEIGHT)),
+                cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_POSITION)),
+                cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_SPEED)),
+                cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_REACTION)),
+                cursor.getFloat(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_ACCELERATION)),
+                cursor.getString(cursor.getColumnIndex(DatabaseDescription.History.COLUMN_DATE)));
     }
 
     @Override
