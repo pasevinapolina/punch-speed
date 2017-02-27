@@ -31,7 +31,6 @@ public class MainSettingsChangeListener implements SettingsChangeListener {
 
     @Override
     public Settings fillSettingsPanel(){
-        //SharedPreferences sharedPreferences = activity.getSharedPreferences(MAIN_SETTINGS, Context.MODE_PRIVATE);
         SettingsPreferenceManager preferenceManager = new SettingsPreferenceManager(activity, MAIN_SETTINGS);
 
         int punchType = preferenceManager.getPunchTypePreference();

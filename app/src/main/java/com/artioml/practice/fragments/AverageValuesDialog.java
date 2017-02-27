@@ -1,15 +1,17 @@
 package com.artioml.practice.fragments;
 
-
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,20 +30,33 @@ import com.artioml.practice.models.Settings;
 /**
  * Created by Polina P on 06.02.2017.
  */
-public class AverageValuesDialog extends AppCompatDialogFragment implements TaskExecutionListener {
+public class AverageValuesDialog extends AppCompatDialogFragment
+        implements TaskExecutionListener {
 
-    private View rootView;
+    private static final String TAG = AverageValuesDialog.class.getSimpleName();
+
     private AverageValuesAsyncTask avgAsyncTask;
+    private Settings settings;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Log.i(TAG, "onCreateDialog");
+        final Dialog dialog = new Dialog(getActivity());
+        if(dialog.getWindow() != null) {
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        return dialog;
+    }
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        rootView = inflater.inflate(R.layout.dialog_average_values, null);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.dialog_average_values, container, false);
 
-        Button okButton = (Button)rootView.findViewById(R.id.dialogOkButton);
+        Log.i(TAG, "onCreateView");
+        Button okButton = (Button)contentView.findViewById(R.id.dialogOkButton);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,18 +64,19 @@ public class AverageValuesDialog extends AppCompatDialogFragment implements Task
             }
         });
 
-        SettingsChangeListener settingsChangeListener = new MainSettingsChangeListener(getActivity(), rootView);
-        Settings settings = settingsChangeListener.fillSettingsPanel();
+        SettingsChangeListener settingsChangeListener =
+                new MainSettingsChangeListener(getActivity(), contentView);
+        settings = settingsChangeListener.fillSettingsPanel();
 
-        //setRetainInstance(true);
-        avgAsyncTask = new AverageValuesAsyncTask();
-        avgAsyncTask.addTaskListener(this);
-        avgAsyncTask.execute(settings);
+        return contentView;
+    }
 
-        builder.setView(rootView);
-        builder.setCancelable(true);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
-        return builder.create();
+        Log.i(TAG, "onCreate");
     }
 
     @Override
@@ -69,8 +85,25 @@ public class AverageValuesDialog extends AppCompatDialogFragment implements Task
 
         Window window = getDialog().getWindow();
         if(window != null) {
-            window.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         }
+        avgAsyncTask = new AverageValuesAsyncTask();
+        avgAsyncTask.addTaskListener(this);
+        avgAsyncTask.execute(settings);
+    }
+
+    @Override
+    public void onDestroyView() {;
+        Log.i(TAG, "onDestroyView");
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        Log.i(TAG, "onDismiss");
     }
 
     private void fillResultTable(AverageValuePair averageValues) {
@@ -79,24 +112,24 @@ public class AverageValuesDialog extends AppCompatDialogFragment implements Task
         Result communityResult = averageValues.getCommunityResult();
 
         //1 column
-        TextView mySpeedTextView = (TextView)rootView.findViewById(R.id.mySpeedTextView);
+        TextView mySpeedTextView = (TextView)getView().findViewById(R.id.mySpeedTextView);
         mySpeedTextView.setText(getString(R.string.speed_result, userResult.getSpeed()));
 
-        TextView myReactionTextView = (TextView)rootView.findViewById(R.id.myReactionTextView);
+        TextView myReactionTextView = (TextView)getView().findViewById(R.id.myReactionTextView);
         myReactionTextView.setText(getString(R.string.reaction_result, userResult.getReaction()));
 
-        TextView myAccelerationTextView = (TextView)rootView.findViewById(R.id.myAccelerationTextView);
+        TextView myAccelerationTextView = (TextView)getView().findViewById(R.id.myAccelerationTextView);
         myAccelerationTextView.setText(Html.fromHtml(
                 getString(R.string.acceleration_result, userResult.getAcceleration())));
 
         //2 column
-        TextView avgSpeedTextView = (TextView)rootView.findViewById(R.id.avgSpeedTextView);
+        TextView avgSpeedTextView = (TextView)getView().findViewById(R.id.avgSpeedTextView);
         avgSpeedTextView.setText(getString(R.string.speed_result, communityResult.getSpeed()));
 
-        TextView avgReactionTextView = (TextView)rootView.findViewById(R.id.avgReactionTextView);
+        TextView avgReactionTextView = (TextView)getView().findViewById(R.id.avgReactionTextView);
         avgReactionTextView.setText(getString(R.string.reaction_result, communityResult.getReaction()));
 
-        TextView avgAccelerationTextView = (TextView)rootView.findViewById(R.id.avgAccelerationTextView);
+        TextView avgAccelerationTextView = (TextView)getView().findViewById(R.id.avgAccelerationTextView);
         avgAccelerationTextView.setText(Html.fromHtml(
                 getString(R.string.acceleration_result, communityResult.getAcceleration())));
 

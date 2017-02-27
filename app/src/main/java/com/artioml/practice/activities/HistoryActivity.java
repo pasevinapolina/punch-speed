@@ -1,14 +1,24 @@
 package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.VectorDrawable;
+import android.os.Parcelable;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -43,15 +53,19 @@ public class HistoryActivity extends AppCompatActivity
 
     private static final String HISTORY_SETTINGS = "historySettings";
     private static final String SETTINGS_DIALOG = "historySettingsDialog";
+    private static final String IS_LOADED = "isLoaded";
+    private static final String KEY_RECYCLER_STATE = "recyclerState";
     private static final String _DESC = " DESC";
 
-    private ArrayList<Result> historyList;
+    private ArrayList<Result> historyList = new ArrayList<>();
     private HistoryAdapter adapter;
     private RecyclerView recyclerView;
+    private Bundle mBundleRecyclerViewState;
 
     private Settings settings;
     private SettingsChangeListener settingsChangeListener;
 
+    private boolean isLoaded;
     private HistoryListAsyncTask historyListTask;
     private ProgressDialog progressDialog;
 
@@ -59,11 +73,11 @@ public class HistoryActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        setActionBar();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        historyList = new ArrayList<>();
+        if(savedInstanceState != null) {
+            isLoaded = savedInstanceState.getBoolean(IS_LOADED);
+        }
 
         settingsChangeListener = new HistorySettingsChangeListener(this, getWindow().getDecorView().getRootView());
         settings = settingsChangeListener.fillSettingsPanel();
@@ -84,8 +98,6 @@ public class HistoryActivity extends AppCompatActivity
         });
 
         restoreAsyncTask();
-        historyListTask.execute(settings);
-
     }
 
     private void restoreAsyncTask() {
@@ -93,12 +105,34 @@ public class HistoryActivity extends AppCompatActivity
         if(historyListTask == null) {
             historyListTask = new HistoryListAsyncTask();
             historyListTask.addTaskListener(this);
+            //if(!isLoaded) {
+                historyListTask.execute(settings);
+            //}
+        } else {
+            progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
+        }
+        historyListTask.addTaskListener(this);
+    }
+
+    private void setActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_history, menu);
+
+        SettingsPreferenceManager preferenceManager =
+                new SettingsPreferenceManager(this, HISTORY_SETTINGS);
+        MenuItem checkedItem = menu.getItem(0).getSubMenu().getItem(preferenceManager.getSortOrderIdPreference());
+        checkedItem.setChecked(true);
+        styleMenuItem(checkedItem);
         return true;
     }
 
@@ -122,25 +156,54 @@ public class HistoryActivity extends AppCompatActivity
             case (R.id.date_sort):
                 sortOrder = History.COLUMN_DATE + _DESC;
                 break;
+            case (android.R.id.home):
+                finish();
+                return super.onOptionsItemSelected(item);
+            case (R.id.submenu_sort):
+                return super.onOptionsItemSelected(item);
         }
 
+        item.setChecked(true);
+        styleMenuItem(item);
+
         settings.setSortOrder(sortOrder);
-        preferenceManager.setSortOrderPreference(sortOrder);
+        preferenceManager.setSortOrderPreference(sortOrder, item.getOrder());
 
         restoreAsyncTask();
-        historyListTask.execute(settings);
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void styleMenuItem(MenuItem item) {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Menu subMenu = toolbar.getMenu().getItem(0).getSubMenu();
+
+        for(int i = 0; i < subMenu.size(); ++i) {
+            changeMenuItemColor(subMenu.getItem(i), R.color.colorTextBlack);
+            subMenu.getItem(i).setIcon(R.drawable.ic_sort_item_48dp);
+        }
+        changeMenuItemColor(item, R.color.colorRedDark);
+        item.setIcon(R.drawable.ic_sort_item_48dp_checked);
+    }
+
+    private void changeMenuItemColor(MenuItem item, @ColorRes int color) {
+        SpannableString s = new SpannableString(item.getTitle().toString());
+        s.setSpan(new ForegroundColorSpan(
+                ContextCompat.getColor(this, color)), 0, s.length(), 0);
+        item.setTitle(s);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
-        settings = settingsChangeListener.fillSettingsPanel();
+        restoreRecyclerViewState();
+    }
 
-        //restoreAsyncTask();
-        //historyListTask.execute(settings);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_LOADED, isLoaded);
     }
 
     @Override
@@ -153,15 +216,29 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        saveRecyclerViewState();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void updateSettings() {
         settings = settingsChangeListener.fillSettingsPanel();
         restoreAsyncTask();
-        historyListTask.execute(settings);
     }
 
     @Override
     public void onStarted() {
-        if(progressDialog == null) {
+        if(progressDialog == null || !progressDialog.isShowing()) {
             progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
                     getString(R.string.collecting_data));
         }
@@ -180,6 +257,7 @@ public class HistoryActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
 
         historyListTask = null;
+        isLoaded = true;
     }
 
     @Override
@@ -190,6 +268,19 @@ public class HistoryActivity extends AppCompatActivity
         Toast.makeText(this, R.string.community_error, Toast.LENGTH_LONG)
                 .show();
         historyListTask = null;
+    }
+
+    private void saveRecyclerViewState() {
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
+    }
+
+    private void restoreRecyclerViewState() {
+        if (mBundleRecyclerViewState != null) {
+            Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            recyclerView.getLayoutManager().onRestoreInstanceState(listState);
+        }
     }
 }
 

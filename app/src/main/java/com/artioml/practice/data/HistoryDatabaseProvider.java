@@ -31,6 +31,9 @@ public class HistoryDatabaseProvider implements HistoryProvider {
             DatabaseDescription.History.COLUMN_DATE
     };
 
+    private static final String _DESC = " DESC";
+    private static final String  _ASC = " ASC";
+
     private SQLiteDatabase db;
     private StringBuffer condition;
     private ArrayList<String> values;
@@ -46,6 +49,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         historyList = new ArrayList<>();
         values = new ArrayList<>();
         condition = new StringBuffer("");
+        sortOrder = DatabaseDescription.History.COLUMN_SPEED + _DESC;
     }
 
     @Override
@@ -137,6 +141,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         this.hand = settings.getHand();
         this.gloves = settings.getGloves();
         this.position = settings.getPosition();
+        this.sortOrder = settings.getSortOrder();
     }
 
     public String getSortOrder() {

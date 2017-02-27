@@ -26,7 +26,7 @@ public class HistoryListProvider implements HistoryProvider {
 
     public HistoryListProvider() {
         historyList = new ArrayList<>();
-        sortOrder = DatabaseDescription.History.COLUMN_DATE + " DESC";
+        sortOrder = DatabaseDescription.History.COLUMN_SPEED + " DESC";
     }
 
     @Override

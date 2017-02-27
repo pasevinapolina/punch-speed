@@ -29,9 +29,7 @@ public class LicenseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_license);
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setActionBar();
 
         Button acceptButton = (Button) findViewById(R.id.acceptButton);
 
@@ -113,4 +111,12 @@ public class LicenseActivity extends AppCompatActivity {
         return bitmapDrawable;
     }
 
+    private void setActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+    }
 }

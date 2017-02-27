@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.HistoryActivity">
 
     <item
-        app:showAsAction="always"
+        android:id="@+id/submenu_sort"
         android:title=""
-        android:icon="@drawable/ic_sort_24dp">
+        android:icon="@drawable/ic_sort_24dp"
+        app:showAsAction="always">
         <menu>
-            <item android:title="@string/speed_menu"
-                android:id="@+id/speed_sort"
-                android:icon="@drawable/ic_sort_item_48dp"
-                android:checked="true" />
-            <item android:title="@string/reaction_menu"
-                android:id="@+id/reaction_sort"
-                android:icon="@drawable/ic_sort_item_48dp"
-                android:checked="false" />
-            <item android:title="@string/acceleration_menu"
-                android:id="@+id/acceleration_sort"
-                android:icon="@drawable/ic_sort_item_48dp"
-                android:checked="false" />
-            <item android:title="@string/date_menu"
-                android:id="@+id/date_sort"
-                android:icon="@drawable/ic_sort_item_48dp"
-                android:checked="false" />
+                <item
+                    android:title="@string/speed_menu"
+                    android:id="@+id/speed_sort"
+                    android:icon="@drawable/menu_item_history"
+                    android:orderInCategory="0"
+                    android:checked="false"/>
+
+                <item
+                    android:title="@string/reaction_menu"
+                    android:id="@+id/reaction_sort"
+                    android:icon="@drawable/menu_item_history"
+                    android:orderInCategory="1"
+                    android:checked="false"/>
+
+                <item
+                    android:title="@string/acceleration_menu"
+                    android:id="@+id/acceleration_sort"
+                    android:icon="@drawable/menu_item_history"
+                    android:orderInCategory="2"
+                    android:checked="false"/>
+
+                <item
+                    android:title="@string/date_menu"
+                    android:id="@+id/date_sort"
+                    android:icon="@drawable/menu_item_history"
+                    android:orderInCategory="3"
+                    android:checked="false"/>
         </menu>
     </item>
-
 </menu>

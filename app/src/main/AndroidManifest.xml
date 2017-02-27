@@ -54,7 +54,7 @@
             android:name=".activities.LoginActivity"
             android:label="@string/community"
             android:parentActivityName=".activities.MainActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="stateHidden|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.artioml.practice.activities.CommunityActivity"/>

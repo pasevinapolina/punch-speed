@@ -26,10 +26,9 @@ import com.artioml.practice.asynctasks.AsyncTaskContainer;
 import com.artioml.practice.fragments.AverageValuesDialog;
 import com.artioml.practice.fragments.ChangeNameDialog;
 import com.artioml.practice.adapters.CommunityAdapter;
-import com.artioml.practice.inject.ServiceLocator;
 import com.artioml.practice.interfaces.TaskExecutionListener;
 import com.artioml.practice.models.Settings;
-import com.artioml.practice.preferences.LoginPrefernceManager;
+import com.artioml.practice.preferences.LoginPreferenceManager;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.fragments.LogoutDialog;
 import com.artioml.practice.interfaces.impl.MainSettingsChangeListener;
@@ -64,13 +63,13 @@ public class CommunityActivity extends AppCompatActivity
     private BottomSheetBehavior mBottomSheetBehavior;
     private RadioButton bestResultsButton;
     private RadioButton avgResultsButton;
+    private TextView myLoginTextView;
 
     private SettingsChangeListener settingsChangeListener;
 
     private ProgressDialog progressDialog;
     private AsyncTaskContainer taskContainer;
 
-    private Result currentResult;
     private Settings settings;
     private String userLogin;
 
@@ -87,15 +86,14 @@ public class CommunityActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
+        setActionBar();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        Log.i(TAG, "onCreate");
         Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
         startActivity(loginIntent);
 
-        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
-        userLogin = prefernceManager.getLoginPreference();
+        LoginPreferenceManager preferenceManager = new LoginPreferenceManager(this);
+        userLogin = preferenceManager.getLoginPreference();
 
         communityResults = new ArrayList<>();
 
@@ -139,39 +137,34 @@ public class CommunityActivity extends AppCompatActivity
         settings = settingsChangeListener.fillSettingsPanel();
 
         setBottomSheet();
-
         restoreAsyncTask();
     }
 
-    private void fillBottomSheet(Result result) {
-        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-
-        TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
-        loginTextView.setText(userLogin);
-
-        TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
-        speedTextView.setText(getString(R.string.speed_result, result.getSpeed()));
-
-        TextView reactionTextView = (TextView)bottomSheet.findViewById(R.id.reactionCommunityTextView);
-        reactionTextView.setText(getString(R.string.reaction_result, result.getReaction()));
-
-        TextView accelerationTextView = (TextView)bottomSheet.findViewById(R.id.accelerationCommunityTextView);
-        accelerationTextView.setText(Html.fromHtml(
-                getString(R.string.acceleration_result, result.getAcceleration())));
+    private void setActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     private void restoreAsyncTask() {
         taskContainer = (AsyncTaskContainer)getLastCustomNonConfigurationInstance();
         if(taskContainer == null) {
             taskContainer = new AsyncTaskContainer();
-            taskContainer.addTaskListeners(this);
+        } else {
+            progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
         }
+        taskContainer.addTaskListeners(this);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume");
         settings = settingsChangeListener.fillSettingsPanel();
 
         restoreAsyncTask();
@@ -210,21 +203,21 @@ public class CommunityActivity extends AppCompatActivity
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    Log.i(TAG, "BottomSheet: STATE_DRAGGING");
-                }
-            }
+//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//                if(newState == BottomSheetBehavior.STATE_DRAGGING) {
+//                    Log.i(TAG, "BottomSheet: STATE_DRAGGING");
+//                }
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//
+//            }
+//        });
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-        TextView myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
+        myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
         myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
 
         bottomSheet.setOnClickListener(new View.OnClickListener() {
@@ -255,21 +248,28 @@ public class CommunityActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void updateLogin(String username) {
+        Log.i(TAG, "updateLogin");
         userLogin = username;
-        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         prefernceManager.setLoginPreferences(true, username);
-        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-        TextView loginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
-        loginTextView.setText(userLogin);
+        myLoginTextView.setText(userLogin);
     }
 
     @Override
     public void logout() {
-        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         prefernceManager.setLoginPreferences(false, null);
-        Intent mainActivity = new Intent(CommunityActivity.this, MainActivity.class);
-        startActivity(mainActivity);
+        finish();
     }
 
     @Override
@@ -320,7 +320,7 @@ public class CommunityActivity extends AppCompatActivity
     }
 
     private void restoreCommunityView() {
-        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         userLogin = prefernceManager.getLoginPreference();
 
         if(avgIsChecked) {
@@ -332,5 +332,20 @@ public class CommunityActivity extends AppCompatActivity
             taskContainer.getBestResultsTask().execute(settings);
             taskContainer.getUserBestResultTask().execute(userLogin);
         }
+    }
+
+    private void fillBottomSheet(Result result) {
+        LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        myLoginTextView.setText(userLogin);
+
+        TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
+        speedTextView.setText(getString(R.string.speed_result, result.getSpeed()));
+
+        TextView reactionTextView = (TextView)bottomSheet.findViewById(R.id.reactionCommunityTextView);
+        reactionTextView.setText(getString(R.string.reaction_result, result.getReaction()));
+
+        TextView accelerationTextView = (TextView)bottomSheet.findViewById(R.id.accelerationCommunityTextView);
+        accelerationTextView.setText(Html.fromHtml(
+                getString(R.string.acceleration_result, result.getAcceleration())));
     }
 }

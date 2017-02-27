@@ -2,6 +2,7 @@ package com.artioml.practice.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.IdRes;
 
 import com.artioml.practice.data.DatabaseDescription;
 import com.artioml.practice.utils.PunchType;
@@ -18,6 +19,7 @@ public class SettingsPreferenceManager {
     private static final String POSITION = "pref_position";
     private static final String PUNCH_TYPE = "pref_punchType";
     private static final String SORT_ORDER = "pref_sortOrder";
+    private static final String SORT_ID = "pref_sortId";
 
     private static SharedPreferences sharedPreferences;
 
@@ -46,7 +48,7 @@ public class SettingsPreferenceManager {
     }
 
     public String getGlovesWeightPreference() {
-        return sharedPreferences.getString(GLOVES_WEIGHT, "80");
+        return sharedPreferences.getString(GLOVES_WEIGHT, "14");
     }
 
     public String getPositionPreference() {
@@ -58,12 +60,17 @@ public class SettingsPreferenceManager {
     }
 
     public String getSortOrderPreference() {
-        return sharedPreferences.getString(SORT_ORDER, DatabaseDescription.History.COLUMN_DATE + " DESC");
+        return sharedPreferences.getString(SORT_ORDER, DatabaseDescription.History.COLUMN_SPEED + " DESC");
     }
 
-    public void setSortOrderPreference(String sortOrder) {
+    public int getSortOrderIdPreference() {
+        return sharedPreferences.getInt(SORT_ID, 0);
+    }
+
+    public void setSortOrderPreference(String sortOrder, int sortOrderId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SORT_ORDER, sortOrder);
+        editor.putString(SORT_ORDER, sortOrder)
+                .putInt(SORT_ID, sortOrderId);
         editor.apply();
     }
 

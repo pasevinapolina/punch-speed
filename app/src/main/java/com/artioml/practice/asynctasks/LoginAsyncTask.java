@@ -1,12 +1,6 @@
 package com.artioml.practice.asynctasks;
 
-import android.os.AsyncTask;
 import android.util.Log;
-
-import com.artioml.practice.data.CommunityProvider;
-import com.artioml.practice.data.DatabaseDescription;
-import com.artioml.practice.inject.ServiceLocator;
-import com.artioml.practice.interfaces.TaskExecutionListener;
 
 /**
  * Created by Polina P on 20.02.2017.
@@ -23,7 +17,7 @@ public class LoginAsyncTask extends GenericAsyncTask<String, Boolean> {
         }
         String login = params[0];
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -24,7 +24,11 @@ public class BestResultsAsyncTask extends GenericAsyncTask<Settings, List<Result
     protected List<Result> doInBackground(Settings... params) {
         communityProvider.setPunchParameters(params[0]);
         List<Result> results = communityProvider.getBestResults();
-
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Log.i(TAG, "Community list size: " + results.size());
         return results;
     }

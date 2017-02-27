@@ -2,7 +2,6 @@ package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,9 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artioml.practice.R;
+import com.artioml.practice.asynctasks.AsyncTaskContainer;
 import com.artioml.practice.asynctasks.LoginAsyncTask;
 import com.artioml.practice.interfaces.TaskExecutionListener;
-import com.artioml.practice.preferences.LoginPrefernceManager;
+import com.artioml.practice.preferences.LoginPreferenceManager;
 
 public class LoginActivity extends AppCompatActivity implements TaskExecutionListener {
 
@@ -38,13 +38,12 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setActionBar();
 
         Button loginButton = (Button) findViewById(R.id.loginButton);
         loginEditText = (EditText) findViewById(R.id.loginEditText);
 
-        final LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        final LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         if(prefernceManager.getIsLoggedInPreference()) {
             finish();
         }
@@ -77,7 +76,8 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if(savedInstanceState != null) {
-            loginEditText.setText(savedInstanceState.getString(LOGIN));
+            userLogin = savedInstanceState.getString(LOGIN);
+            loginEditText.setText(userLogin);
         }
     }
 
@@ -85,6 +85,13 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString(LOGIN, loginEditText.getText().toString());
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(mainActivity);
     }
 
     @Override
@@ -97,8 +104,18 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void onStarted() {
-        if(progressDialog == null || !progressDialog.isShowing()) {
+        Log.i(TAG, "onStarted");
+        if(progressDialog == null || progressDialog.isShowing()) {
             progressDialog = ProgressDialog.show(LoginActivity.this, getString(R.string.loading),
                     getString(R.string.please_wait));
         }
@@ -106,10 +123,11 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
 
     @Override
     public void onCompleted(Object... result) {
+        Log.i(TAG, "onCompleted");
         if(progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        LoginPrefernceManager prefernceManager = new LoginPrefernceManager(this);
+        LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         prefernceManager.setLoginPreferences(true, userLogin);
         finish();
     }
@@ -129,7 +147,21 @@ public class LoginActivity extends AppCompatActivity implements TaskExecutionLis
         if(loginTask == null){
             Log.i(TAG, "Create new task");
             loginTask = new LoginAsyncTask();
+        } else {
+            Log.i(TAG, "Task restored");
+            progressDialog = ProgressDialog.show(LoginActivity.this, getString(R.string.loading),
+                    getString(R.string.please_wait));
+            loginEditText.setText(userLogin);
         }
         loginTask.addTaskListener(this);
+    }
+
+    private void setActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 }

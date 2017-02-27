@@ -3,10 +3,13 @@ package com.artioml.practice.fragments;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,37 +29,45 @@ public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExe
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Dialog dialog = new Dialog(getActivity());
+        if(dialog.getWindow() != null) {
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        return dialog;
+    }
 
-        LayoutInflater linf = LayoutInflater.from(getActivity());
-        final View inflater = linf.inflate(R.layout.dialog_change_name, null);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        final View contentView = inflater.inflate(R.layout.dialog_change_name, container, false);
 
-        Button yesButton = (Button)inflater.findViewById(R.id.dialogYesButton);
+        Button yesButton = (Button)contentView.findViewById(R.id.dialogYesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText usernameEditText = (EditText) inflater.findViewById(R.id.usernameEditText);
+                EditText usernameEditText = (EditText) contentView.findViewById(R.id.usernameEditText);
                 String newLogin = usernameEditText.getText().toString();
                 changeLoginTask.execute(newLogin);
             }
         });
 
-        Button noButton = (Button)inflater.findViewById(R.id.dialogNoButton);
+        Button noButton = (Button)contentView.findViewById(R.id.dialogNoButton);
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
+        return contentView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         changeLoginTask = new ChangeLoginAsyncTask();
         changeLoginTask.addTaskListener(this);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(inflater);
-
-        builder.setCancelable(true);
-
-        return builder.create();
     }
 
     @Override
@@ -73,7 +84,8 @@ public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExe
 
     @Override
     public void onError() {
-        //Toast.makeText(getDialog().getContext(), getString(R.string.community_error), )
+        Toast.makeText(getDialog().getContext(), getString(R.string.community_error), Toast.LENGTH_LONG)
+                .show();
     }
 
     public interface ChangeNameListener {

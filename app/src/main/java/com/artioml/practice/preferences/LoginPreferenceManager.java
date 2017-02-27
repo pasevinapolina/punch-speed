@@ -7,14 +7,14 @@ import android.content.SharedPreferences;
  * Created by Polina P on 22.02.2017.
  */
 
-public class LoginPrefernceManager {
+public class LoginPreferenceManager {
     private static final String COMMUNITY_STORAGE = "communityStorage";
     private static final String IS_LOGGED_IN = "pref_isLoggedIn";
     private static final String LOGIN = "pref_login";
 
     private SharedPreferences sharedPreferences;
 
-    public LoginPrefernceManager(final Context context) {
+    public LoginPreferenceManager(final Context context) {
         this.sharedPreferences = context.getSharedPreferences(COMMUNITY_STORAGE, Context.MODE_PRIVATE);
     }
 

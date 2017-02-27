@@ -58,9 +58,7 @@ public class PunchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_punch_result);
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setActionBar();
 
         speed = getIntent().getFloatExtra("speed", 45);
         reaction  = getIntent().getFloatExtra("reaction", 20);
@@ -263,5 +261,14 @@ public class PunchResultActivity extends AppCompatActivity {
         canvas.drawPath(path, p);
 
         return new BitmapDrawable(getResources(), bitmap);
+    }
+
+    private void setActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 }
