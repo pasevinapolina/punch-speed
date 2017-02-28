@@ -20,10 +20,10 @@ public class CommunityDatabaseProvider implements CommunityProvider {
             DatabaseDescription.Community.COLUMN_PASSWORD
     };
 
-    private SQLiteDatabase db;
+    private PracticeDatabaseHelper dbHelper;
 
     public CommunityDatabaseProvider(Context context) {
-        db = (PracticeDatabaseHelper.getInstance(context)).getReadableDatabase();
+        dbHelper = PracticeDatabaseHelper.getInstance(context);
     }
 
     @Override
@@ -47,6 +47,7 @@ public class CommunityDatabaseProvider implements CommunityProvider {
         String selection = DatabaseDescription.Community.COLUMN_LOGIN + " LIKE ?";
         String[] selectionArgs = { oldLogin };
 
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         int count = db.update(
                 DatabaseDescription.Community.TABLE_NAME,
                 values,

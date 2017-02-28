@@ -1,11 +1,14 @@
 package com.artioml.practice.fragments;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +27,27 @@ import com.artioml.practice.interfaces.TaskExecutionListener;
 
 public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExecutionListener {
 
+    public static final String TAG = ChangeNameDialog.class.getSimpleName();
+
     private ChangeLoginAsyncTask changeLoginTask;
+    private Button yesButton;
+    private ProgressDialog progressDialog;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(changeLoginTask != null) {
+            Log.i(TAG, "Task restored");
+            changeLoginTask.addTaskListener(this);
+        }
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @NonNull
     @Override
@@ -42,7 +65,7 @@ public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExe
                              @Nullable Bundle savedInstanceState) {
         final View contentView = inflater.inflate(R.layout.dialog_change_name, container, false);
 
-        Button yesButton = (Button)contentView.findViewById(R.id.dialogYesButton);
+        yesButton = (Button)contentView.findViewById(R.id.dialogYesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,26 +89,56 @@ public class ChangeNameDialog extends AppCompatDialogFragment implements TaskExe
     public void onStart() {
         super.onStart();
 
-        changeLoginTask = new ChangeLoginAsyncTask();
-        changeLoginTask.addTaskListener(this);
+        if(changeLoginTask == null) {
+            changeLoginTask = new ChangeLoginAsyncTask();
+            changeLoginTask.addTaskListener(this);
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(changeLoginTask != null) {
+            changeLoginTask.removeTaskListener();
+        }
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
     public void onStarted() {
-
+        yesButton.setEnabled(false);
+        if(progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = ProgressDialog.show(getActivity(),getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
+        }
     }
 
     @Override
     public void onCompleted(Object... result) {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
         ChangeNameListener activity = (ChangeNameListener)getActivity();
         activity.updateLogin((String)result[0]);
+        changeLoginTask = null;
         dismiss();
     }
 
     @Override
     public void onError() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
         Toast.makeText(getDialog().getContext(), getString(R.string.community_error), Toast.LENGTH_LONG)
                 .show();
+        yesButton.setEnabled(true);
+        changeLoginTask = null;
     }
 
     public interface ChangeNameListener {

@@ -1,5 +1,8 @@
 package com.artioml.practice.models;
 
+import com.artioml.practice.data.DatabaseDescription;
+import com.artioml.practice.utils.SortOrder;
+
 /**
  * Created by Polina P on 20.02.2017.
  */
@@ -72,7 +75,7 @@ public class Settings {
         return sortOrder;
     }
 
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setSortOrder(String column, SortOrder type) {
+        this.sortOrder = column + type.getValue();
     }
 }

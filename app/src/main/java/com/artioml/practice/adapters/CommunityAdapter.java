@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.artioml.practice.R;
 import com.artioml.practice.models.Result;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.ViewHolder> {
 
-    private final List<Result> communityResults;
+    private final ArrayList<Result> communityResults;
     private Context context;
 
-    public CommunityAdapter(Context context, List<Result> communityResults) {
+    public CommunityAdapter(Context context, ArrayList<Result> communityResults) {
         this.communityResults = communityResults;
         this.context = context;
     }
@@ -70,5 +71,9 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
             this.loginTextView = (TextView)itemView.findViewById(R.id.loginCommunityTextView);
             this.topNumberTextView = (TextView)itemView.findViewById(R.id.topNumberTextView);
         }
+    }
+
+    public ArrayList<Result> getCommunityResults() {
+        return communityResults;
     }
 }

@@ -1,6 +1,8 @@
 package com.artioml.practice.fragments;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -37,6 +39,25 @@ public class AverageValuesDialog extends AppCompatDialogFragment
 
     private AverageValuesAsyncTask avgAsyncTask;
     private Settings settings;
+    private ProgressDialog progressDialog;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.i(TAG, "onAttach");
+
+        if(avgAsyncTask != null) {
+            Log.i(TAG, "Task restored");
+            avgAsyncTask.addTaskListener(this);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        Log.i(TAG, "onCreate");
+    }
 
     @NonNull
     @Override
@@ -72,38 +93,43 @@ public class AverageValuesDialog extends AppCompatDialogFragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-
-        Log.i(TAG, "onCreate");
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-
+        Log.i(TAG, "onStart");
         Window window = getDialog().getWindow();
         if(window != null) {
             window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         }
-        avgAsyncTask = new AverageValuesAsyncTask();
-        avgAsyncTask.addTaskListener(this);
-        avgAsyncTask.execute(settings);
-    }
-
-    @Override
-    public void onDestroyView() {;
-        Log.i(TAG, "onDestroyView");
-        if (getDialog() != null && getRetainInstance())
-            getDialog().setDismissMessage(null);
-        super.onDestroyView();
+        if(avgAsyncTask == null) {
+            avgAsyncTask = new AverageValuesAsyncTask();
+            avgAsyncTask.addTaskListener(this);
+            avgAsyncTask.execute(settings);
+        }
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
         Log.i(TAG, "onDismiss");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView");
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG, "onDetach");
+        if(avgAsyncTask != null) {
+            avgAsyncTask.removeTaskListener();
+        }
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void fillResultTable(AverageValuePair averageValues) {
@@ -154,21 +180,32 @@ public class AverageValuesDialog extends AppCompatDialogFragment
 
     @Override
     public void onStarted() {
-
-    }
-
-    @Override
-    public void onCompleted(Object... result) {
-        if(result != null && result[0] instanceof AverageValuePair) {
-            fillResultTable((AverageValuePair) result[0]);
+        if(progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = ProgressDialog.show(getActivity(),getString(R.string.collecting_data),
+                    getString(R.string.collecting_data));
         }
     }
 
     @Override
+    public void onCompleted(Object... result) {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        if(result != null && result[0] instanceof AverageValuePair) {
+            fillResultTable((AverageValuePair) result[0]);
+        }
+        avgAsyncTask = null;
+    }
+
+    @Override
     public void onError() {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
         Toast.makeText(getDialog().getContext(),
                 getString(R.string.community_error), Toast.LENGTH_LONG)
                 .show();
+        avgAsyncTask = null;
         dismiss();
     }
 }

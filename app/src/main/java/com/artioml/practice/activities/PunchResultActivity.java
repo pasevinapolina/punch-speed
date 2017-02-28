@@ -23,8 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.artioml.practice.R;
+import com.artioml.practice.data.HistoryProvider;
 import com.artioml.practice.data.PracticeDatabaseHelper;
 import com.artioml.practice.data.DatabaseDescription.History;
+import com.artioml.practice.inject.ServiceLocator;
+import com.artioml.practice.models.Result;
+import com.artioml.practice.utils.PunchSpeedApplication;
 import com.artioml.practice.views.ProgressItem;
 import com.artioml.practice.views.ResultSeekBar;
 
@@ -163,18 +167,11 @@ public class PunchResultActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd HH.mm.ss", Locale.ROOT);
         Calendar calendar = Calendar.getInstance();
 
-        SQLiteDatabase db = (PracticeDatabaseHelper.getInstance(this)).getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(History.COLUMN_PUNCH_TYPE, punchType);
-        cv.put(History.COLUMN_HAND, hand);
-        cv.put(History.COLUMN_GLOVES, gloves);
-        cv.put(History.COLUMN_GLOVES_WEIGHT, weight);
-        cv.put(History.COLUMN_POSITION, position);
-        cv.put(History.COLUMN_SPEED, speed);
-        cv.put(History.COLUMN_REACTION, reaction);
-        cv.put(History.COLUMN_ACCELERATION, acceleration);
-        cv.put(History.COLUMN_DATE, sdf.format(calendar.getTime()));
-        long id = db.insert(History.TABLE_NAME, null, cv);
+        ServiceLocator.setContext(PunchSpeedApplication.getContext());
+        HistoryProvider historyProvider = ServiceLocator.getHistoryProvider();
+        Result result = new Result(punchType, hand, gloves, weight, position,
+                speed, reaction, acceleration, sdf.format(calendar.getTime()));
+        long id = historyProvider.addResult(result);
         Log.i("INSERT", "" + id);
 
     }

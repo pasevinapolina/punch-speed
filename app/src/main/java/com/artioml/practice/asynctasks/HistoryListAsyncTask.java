@@ -47,11 +47,6 @@ public class HistoryListAsyncTask extends AsyncTask<Settings, Void, List<Result>
             historyProvider.setPunchParameters(params[0]);
             results = historyProvider.getHistoryList();
             Log.i(TAG, "History list size: " + results.size());
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         return results;
     }

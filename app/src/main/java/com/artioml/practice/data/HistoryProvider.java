@@ -2,6 +2,7 @@ package com.artioml.practice.data;
 
 import com.artioml.practice.models.Result;
 import com.artioml.practice.models.Settings;
+import com.artioml.practice.utils.SortOrder;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,6 @@ public interface HistoryProvider {
     ArrayList<Result> getHistoryList();
     void clearHistory();
 
-    void setSortOrder(String sortOrder);
+    void setSortOrder(String sortOrder, SortOrder type);
     void setPunchParameters(Settings settings);
 }

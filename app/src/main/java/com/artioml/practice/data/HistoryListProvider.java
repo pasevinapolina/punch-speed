@@ -2,6 +2,7 @@ package com.artioml.practice.data;
 
 import com.artioml.practice.models.Result;
 import com.artioml.practice.models.Settings;
+import com.artioml.practice.utils.SortOrder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class HistoryListProvider implements HistoryProvider {
     }
 
     @Override
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setSortOrder(String sortOrder, SortOrder type) {
+        this.sortOrder = sortOrder + type.getValue();
     }
 
     @Override

@@ -17,7 +17,7 @@ public class LoginAsyncTask extends GenericAsyncTask<String, Boolean> {
         }
         String login = params[0];
         try {
-            Thread.sleep(10000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -30,6 +30,7 @@ import com.artioml.practice.interfaces.impl.HistorySettingsChangeListener;
 import com.artioml.practice.models.Settings;
 import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.asynctasks.HistoryListAsyncTask;
+import com.artioml.practice.utils.SortOrder;
 import com.artioml.practice.views.ItemDivider;
 import com.artioml.practice.R;
 import com.artioml.practice.adapters.HistoryAdapter;
@@ -121,6 +122,7 @@ public class HistoryActivity extends AppCompatActivity
 
     private void setActionBar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay);
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -145,20 +147,20 @@ public class HistoryActivity extends AppCompatActivity
 
         SettingsPreferenceManager preferenceManager =
                 new SettingsPreferenceManager(this, HISTORY_SETTINGS);
-        String sortOrder = History.COLUMN_SPEED + _DESC;
+        String sortOrder = History.COLUMN_SPEED;
 
         switch (item.getItemId()) {
             case (R.id.speed_sort):
-                sortOrder = History.COLUMN_SPEED + _DESC;
+                sortOrder = History.COLUMN_SPEED;
                 break;
             case (R.id.reaction_sort):
-                sortOrder = History.COLUMN_REACTION + _DESC;
+                sortOrder = History.COLUMN_REACTION;
                 break;
             case (R.id.acceleration_sort):
-                sortOrder = History.COLUMN_ACCELERATION + _DESC;
+                sortOrder = History.COLUMN_ACCELERATION;
                 break;
             case (R.id.date_sort):
-                sortOrder = History.COLUMN_DATE + _DESC;
+                sortOrder = History.COLUMN_DATE;
                 break;
             case (android.R.id.home):
                 finish();
@@ -167,10 +169,9 @@ public class HistoryActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
 
-        item.setChecked(true);
         styleMenuItem(item);
 
-        settings.setSortOrder(sortOrder);
+        settings.setSortOrder(sortOrder, SortOrder.DESC);
         preferenceManager.setSortOrderPreference(sortOrder, item.getOrder());
 
         isLoaded = false;
@@ -187,8 +188,8 @@ public class HistoryActivity extends AppCompatActivity
             changeMenuItemColor(subMenu.getItem(i), R.color.colorTextBlack);
             subMenu.getItem(i).setIcon(R.drawable.ic_sort_item_48dp);
         }
-        changeMenuItemColor(item, R.color.colorRedDark);
-        item.setIcon(R.drawable.ic_sort_item_48dp_checked);
+        changeMenuItemColor(item, R.color.colorPrimaryDark);
+        item.setIcon(R.drawable.ic_arrow_down);
     }
 
     private void changeMenuItemColor(MenuItem item, @ColorRes int color) {

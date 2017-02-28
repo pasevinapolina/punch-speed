@@ -2,7 +2,6 @@ package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artioml.practice.asynctasks.AsyncTaskContainer;
+import com.artioml.practice.asynctasks.AverageValuesAsyncTask;
 import com.artioml.practice.fragments.AverageValuesDialog;
 import com.artioml.practice.fragments.ChangeNameDialog;
 import com.artioml.practice.adapters.CommunityAdapter;
@@ -36,6 +36,8 @@ import com.artioml.practice.fragments.MainSettingsDialog;
 import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.models.Result;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +57,11 @@ public class CommunityActivity extends AppCompatActivity
     private static final String AVERAGE_VALUES_DIALOG = "averageValuesDialog";
     private static final String LOGOUT_DIALOG = "logoutDialog";
     private static final String AVG_BUTTON_CHECKED = "checkedButton";
+    //private static final String KEY_COMMUNITY_LIST = "keyCommunityList";
+    //private static final String TASK_COUNT = "taskCount";
 
     private CommunityAdapter adapter;
-    private List<Result> communityResults;
+    private ArrayList<Result> communityResults;
     private boolean avgIsChecked;
 
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -69,6 +73,7 @@ public class CommunityActivity extends AppCompatActivity
 
     private ProgressDialog progressDialog;
     private AsyncTaskContainer taskContainer;
+    //private int completedTaskCount;
 
     private Settings settings;
     private String userLogin;
@@ -88,14 +93,24 @@ public class CommunityActivity extends AppCompatActivity
         setContentView(R.layout.activity_community);
         setActionBar();
 
+        checkLogin();
+
         Log.i(TAG, "onCreate");
-        Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
+//        AverageValuesDialog avgDialog = (AverageValuesDialog) getSupportFragmentManager().findFragmentByTag(AVERAGE_VALUES_DIALOG);
+//        if(avgDialog != null) {
+//            Log.i(TAG, "Dialog found");
+//        } else {
+//            Log.i(TAG, "Dialog missed");
+//        }
 
         LoginPreferenceManager preferenceManager = new LoginPreferenceManager(this);
         userLogin = preferenceManager.getLoginPreference();
 
         communityResults = new ArrayList<>();
+//        if(savedInstanceState != null) {
+//            completedTaskCount = savedInstanceState.getInt(TASK_COUNT);
+//            communityResults = savedInstanceState.getParcelableArrayList(KEY_COMMUNITY_LIST);
+//        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.communityRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -140,6 +155,14 @@ public class CommunityActivity extends AppCompatActivity
         restoreAsyncTask();
     }
 
+    private void checkLogin() {
+        LoginPreferenceManager preferenceManager = new LoginPreferenceManager(this);
+        if(!preferenceManager.getIsLoggedInPreference()) {
+            Intent loginIntent = new Intent(CommunityActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+        }
+    }
+
     private void setActionBar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -151,8 +174,9 @@ public class CommunityActivity extends AppCompatActivity
 
     private void restoreAsyncTask() {
         taskContainer = (AsyncTaskContainer)getLastCustomNonConfigurationInstance();
-        if(taskContainer == null) {
+        if (taskContainer == null) {
             taskContainer = new AsyncTaskContainer();
+            //completedTaskCount = 0;
         } else {
             progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
                     getString(R.string.collecting_data));
@@ -181,12 +205,12 @@ public class CommunityActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         FragmentManager manager = getSupportFragmentManager();
+        //completedTaskCount = 2;
 
         switch (item.getItemId()) {
             case R.id.average_values:
-                AverageValuesDialog averageValuesDialog = new AverageValuesDialog();
-                averageValuesDialog.show(manager, AVERAGE_VALUES_DIALOG);
-
+                AverageValuesDialog avgValuesDialog = new AverageValuesDialog();
+                avgValuesDialog.show(manager, AVERAGE_VALUES_DIALOG);
                 break;
             case R.id.change_username:
                 new ChangeNameDialog().show(manager, CHANGE_NAME_DIALOG);
@@ -203,19 +227,6 @@ public class CommunityActivity extends AppCompatActivity
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                if(newState == BottomSheetBehavior.STATE_DRAGGING) {
-//                    Log.i(TAG, "BottomSheet: STATE_DRAGGING");
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
 
         myLoginTextView = (TextView)bottomSheet.findViewById(R.id.loginCommunityTextView);
         myLoginTextView.setTextColor(ContextCompat.getColor(this, R.color.colorRedDark));
@@ -244,7 +255,8 @@ public class CommunityActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(AVG_BUTTON_CHECKED, avgResultsButton.isChecked());
-
+        //outState.putInt(TASK_COUNT, completedTaskCount);
+        //outState.putParcelableArrayList(KEY_COMMUNITY_LIST, adapter.getCommunityResults());
     }
 
     @Override
@@ -279,7 +291,7 @@ public class CommunityActivity extends AppCompatActivity
 
     @Override
     public void onStarted() {
-        if(progressDialog == null) {
+        if(progressDialog == null || !progressDialog.isShowing()) {
             progressDialog = ProgressDialog.show(this, getString(R.string.collecting_data),
                     getString(R.string.collecting_data));
         }
@@ -299,6 +311,7 @@ public class CommunityActivity extends AppCompatActivity
             }
         }
         taskContainer = null;
+        //++completedTaskCount;
     }
 
     @Override
@@ -309,6 +322,7 @@ public class CommunityActivity extends AppCompatActivity
         Toast.makeText(this, R.string.community_error, Toast.LENGTH_LONG)
                 .show();
         taskContainer = null;
+        //++completedTaskCount;
     }
 
     private void onCommunityTaskCompleted(List<Result> resultList) {
@@ -323,20 +337,25 @@ public class CommunityActivity extends AppCompatActivity
         LoginPreferenceManager prefernceManager = new LoginPreferenceManager(this);
         userLogin = prefernceManager.getLoginPreference();
 
-        if(avgIsChecked) {
-            avgResultsButton.setChecked(true);
-            taskContainer.getAvgResultsTask().execute(settings);
-            taskContainer.getUserAvgResultAsyncTask().execute(userLogin);
-        } else {
-            bestResultsButton.setChecked(true);
-            taskContainer.getBestResultsTask().execute(settings);
-            taskContainer.getUserBestResultTask().execute(userLogin);
-        }
+        //if(completedTaskCount != 2) {
+            if (avgIsChecked) {
+                avgResultsButton.setChecked(true);
+                taskContainer.getAvgResultsTask().execute(settings);
+                taskContainer.getUserAvgResultAsyncTask().execute(userLogin);
+            } else {
+                bestResultsButton.setChecked(true);
+                taskContainer.getBestResultsTask().execute(settings);
+                taskContainer.getUserBestResultTask().execute(userLogin);
+            }
+        //}
     }
 
     private void fillBottomSheet(Result result) {
         LinearLayout bottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
         myLoginTextView.setText(userLogin);
+
+        //TextView numberTextView = (TextView)bottomSheet.findViewById(R.id.topNumberTextView);
+        //numberTextView.setText();
 
         TextView speedTextView = (TextView)bottomSheet.findViewById(R.id.speedCommunityTextView);
         speedTextView.setText(getString(R.string.speed_result, result.getSpeed()));

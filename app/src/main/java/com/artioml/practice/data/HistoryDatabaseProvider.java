@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.artioml.practice.models.Result;
 import com.artioml.practice.models.Settings;
 import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.utils.SortOrder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,9 +36,6 @@ public class HistoryDatabaseProvider implements HistoryProvider {
             DatabaseDescription.History.COLUMN_DATE
     };
 
-    private static final String _DESC = " DESC";
-    private static final String  _ASC = " ASC";
-
     private PracticeDatabaseHelper dbHelper;
     private StringBuffer condition;
     private ArrayList<String> values;
@@ -53,7 +51,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         historyList = new ArrayList<>();
         values = new ArrayList<>();
         condition = new StringBuffer("");
-        sortOrder = DatabaseDescription.History.COLUMN_SPEED + _DESC;
+        sortOrder = DatabaseDescription.History.COLUMN_SPEED + SortOrder.DESC.getValue();
     }
 
     @Override
@@ -167,8 +165,8 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         return sortOrder;
     }
 
-    public void setSortOrder(String sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setSortOrder(String sortOrder, SortOrder type) {
+        this.sortOrder = sortOrder + type.getValue();
     }
 
     public String getHand() {

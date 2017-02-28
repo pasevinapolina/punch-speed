@@ -80,13 +80,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/speed_result"/>
+                        tools:text="@string/speed_result"/>
                     <TextView
                         android:id="@+id/avgSpeedTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/speed_result"/>
+                        tools:text="@string/speed_result"/>
                 </TableRow>
 
                 <TableRow
@@ -102,13 +102,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/reaction_result"/>
+                        tools:text="@string/reaction_result"/>
                     <TextView
                         android:id="@+id/avgReactionTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/reaction_result"/>
+                        tools:text="@string/reaction_result"/>
                 </TableRow>
 
                 <TableRow
@@ -124,13 +124,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/acceleration_result"/>
+                        tools:text="@string/acceleration_result"/>
                     <TextView
                         android:id="@+id/avgAccelerationTextView"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="@string/acceleration_result"/>
+                        tools:text="@string/acceleration_result"/>
                 </TableRow>
 
             </TableLayout>
