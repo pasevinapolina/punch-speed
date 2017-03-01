@@ -1,6 +1,5 @@
 package com.artioml.practice.models;
 
-import com.artioml.practice.data.DatabaseDescription;
 import com.artioml.practice.utils.SortOrder;
 
 /**
@@ -14,7 +13,8 @@ public class Settings {
     private String gloves;
     private String glovesWeight;
     private String position;
-    private String sortOrder;
+    private String sortColumn;
+    private SortOrder orderType;
 
     public Settings(int punchType, String hand, String gloves, String position) {
         this.punchType = punchType;
@@ -24,11 +24,15 @@ public class Settings {
     }
 
     public Settings(int punchType, String hand, String gloves, String glovesWeight, String position) {
-        this.punchType = punchType;
-        this.hand = hand;
-        this.gloves = gloves;
+        this(punchType, hand, gloves, position);
         this.glovesWeight = glovesWeight;
-        this.position = position;
+    }
+
+    public Settings(int punchType, String hand, String gloves,
+                    String position, String sortColumn, SortOrder orderType) {
+        this(punchType, hand, gloves, position);
+        this.sortColumn = sortColumn;
+        this.orderType = orderType;
     }
 
     public String getGlovesWeight() {
@@ -71,11 +75,24 @@ public class Settings {
         this.position = position;
     }
 
-    public String getSortOrder() {
-        return sortOrder;
+    public String getSortColumn() {
+        return sortColumn;
+    }
+
+    public void setSortColumn(String sortColumn) {
+        this.sortColumn = sortColumn;
     }
 
     public void setSortOrder(String column, SortOrder type) {
-        this.sortOrder = column + type.getValue();
+        this.sortColumn = column;
+        this.orderType = type;
+    }
+
+    public SortOrder getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(SortOrder orderType) {
+        this.orderType = orderType;
     }
 }

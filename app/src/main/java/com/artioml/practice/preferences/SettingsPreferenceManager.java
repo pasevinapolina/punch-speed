@@ -6,9 +6,10 @@ import android.support.annotation.IdRes;
 
 import com.artioml.practice.data.DatabaseDescription;
 import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.utils.SortOrder;
 
 /**
- * Created by user on 17.02.2017.
+ * Created by Polina P on 17.02.2017.
  */
 
 public class SettingsPreferenceManager {
@@ -18,7 +19,9 @@ public class SettingsPreferenceManager {
     private static final String GLOVES_WEIGHT = "pref_glovesWeight";
     private static final String POSITION = "pref_position";
     private static final String PUNCH_TYPE = "pref_punchType";
+
     private static final String SORT_ORDER = "pref_sortOrder";
+    private static final String SORT_TYPE = "pref_sortType";
     private static final String SORT_ID = "pref_sortId";
 
     private static SharedPreferences sharedPreferences;
@@ -60,16 +63,22 @@ public class SettingsPreferenceManager {
     }
 
     public String getSortOrderPreference() {
-        return sharedPreferences.getString(SORT_ORDER, DatabaseDescription.History.COLUMN_SPEED + " DESC");
+        return sharedPreferences.getString(SORT_ORDER, DatabaseDescription.History.COLUMN_SPEED);
     }
 
     public int getSortOrderIdPreference() {
         return sharedPreferences.getInt(SORT_ID, 0);
     }
 
-    public void setSortOrderPreference(String sortOrder, int sortOrderId) {
+    public SortOrder getSortTypePreference() {
+        String pref = sharedPreferences.getString(SORT_TYPE, SortOrder.DESC.getValue());
+        return SortOrder.getTypeByValue(pref);
+    }
+
+    public void setSortOrderPreference(String sortOrder, SortOrder sortType, int sortOrderId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(SORT_ORDER, sortOrder)
+                .putString(SORT_TYPE, sortType.getValue())
                 .putInt(SORT_ID, sortOrderId);
         editor.apply();
     }

@@ -14,6 +14,15 @@ public enum SortOrder {
         this.value = value;
     }
 
+    public static SortOrder getTypeByValue(String value) {
+        for (SortOrder type : SortOrder.values()) {
+            if (type.getValue().equals(value)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
     public String getValue() {
         return value;
     }

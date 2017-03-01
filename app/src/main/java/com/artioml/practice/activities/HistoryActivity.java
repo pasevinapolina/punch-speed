@@ -1,13 +1,10 @@
 package com.artioml.practice.activities;
 
 import android.app.ProgressDialog;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +15,6 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -55,7 +51,6 @@ public class HistoryActivity extends AppCompatActivity
     private static final String IS_LOADED = "isLoaded";
     private static final String KEY_RECYCLER_STATE = "recyclerState";
     public static final String KEY_HISTORY_LIST = "historyList";
-    private static final String _DESC = " DESC";
 
     private ArrayList<Result> historyList;
     private HistoryAdapter adapter;
@@ -170,9 +165,10 @@ public class HistoryActivity extends AppCompatActivity
         }
 
         styleMenuItem(item);
+        setSortOrderIcon(item, preferenceManager.getSortOrderIdPreference());
 
-        settings.setSortOrder(sortOrder, SortOrder.DESC);
-        preferenceManager.setSortOrderPreference(sortOrder, item.getOrder());
+        settings.setSortColumn(sortOrder);
+        preferenceManager.setSortOrderPreference(sortOrder, settings.getOrderType(), item.getOrder());
 
         isLoaded = false;
         restoreAsyncTask();
@@ -185,18 +181,33 @@ public class HistoryActivity extends AppCompatActivity
         Menu subMenu = toolbar.getMenu().getItem(0).getSubMenu();
 
         for(int i = 0; i < subMenu.size(); ++i) {
-            changeMenuItemColor(subMenu.getItem(i), R.color.colorTextBlack);
+            setMenuItemColor(subMenu.getItem(i), R.color.colorTextBlack);
             subMenu.getItem(i).setIcon(R.drawable.ic_sort_item_48dp);
         }
-        changeMenuItemColor(item, R.color.colorPrimaryDark);
+        setMenuItemColor(item, R.color.colorPrimaryDark);
         item.setIcon(R.drawable.ic_arrow_down);
     }
 
-    private void changeMenuItemColor(MenuItem item, @ColorRes int color) {
+    private void setMenuItemColor(MenuItem item, @ColorRes int color) {
         SpannableString s = new SpannableString(item.getTitle().toString());
         s.setSpan(new ForegroundColorSpan(
                 ContextCompat.getColor(this, color)), 0, s.length(), 0);
         item.setTitle(s);
+    }
+
+    private void setSortOrderIcon(MenuItem item, int prevOrderId) {
+        SortOrder orderType = SortOrder.DESC;
+        if(prevOrderId == item.getOrder()) {
+            if (settings.getOrderType() == SortOrder.ASC) {
+                orderType = SortOrder.DESC;
+                item.setIcon(R.drawable.ic_arrow_up);
+            }
+            if (settings.getOrderType() == SortOrder.DESC) {
+                orderType = SortOrder.ASC;
+                item.setIcon(R.drawable.ic_arrow_down);
+            }
+        }
+        settings.setOrderType(orderType);
     }
 
     @Override

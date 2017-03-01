@@ -10,10 +10,7 @@ import com.artioml.practice.models.Settings;
 import com.artioml.practice.utils.PunchType;
 import com.artioml.practice.utils.SortOrder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Created by Polina P on 06.02.2017.
@@ -158,7 +155,7 @@ public class HistoryDatabaseProvider implements HistoryProvider {
         this.hand = settings.getHand();
         this.gloves = settings.getGloves();
         this.position = settings.getPosition();
-        this.sortOrder = settings.getSortOrder();
+        this.sortOrder = settings.getSortColumn() + settings.getOrderType().getValue();
     }
 
     public String getSortOrder() {

@@ -20,11 +20,12 @@ import com.artioml.practice.interfaces.SettingsChangeListener;
 public class MainSettingsChangeListener implements SettingsChangeListener {
 
     private static final String MAIN_SETTINGS = "mainSettings";
+    private static final String DRAWABLE = "drawable";
 
     private Activity activity;
     private View rootView;
 
-    public MainSettingsChangeListener(Activity activity, View rootView) {
+    public MainSettingsChangeListener(final Activity activity, View rootView) {
         this.activity = activity;
         this.rootView = rootView;
     }
@@ -40,11 +41,11 @@ public class MainSettingsChangeListener implements SettingsChangeListener {
 
         String hand = "ic_" + preferenceManager.getHandPreference() + "_hand";
         ((ImageView) rootView.findViewById(R.id.handView)).setImageResource( //ContextCompat.getDrawable(this,
-                activity.getResources().getIdentifier(hand, "drawable", activity.getPackageName()));
+                activity.getResources().getIdentifier(hand, DRAWABLE, activity.getPackageName()));
 
         String gloves = "ic_gloves_" + preferenceManager.getGlovesPreference();
         ((ImageView) rootView.findViewById(R.id.glovesView)).setImageResource( //setImageDrawable(ContextCompat.getDrawable(this,
-                activity.getResources().getIdentifier(gloves, "drawable", activity.getPackageName()));
+                activity.getResources().getIdentifier(gloves, DRAWABLE, activity.getPackageName()));
 
         String glovesWeight = preferenceManager.getGlovesWeightPreference();
         if (gloves.compareTo("ic_gloves_off") == 0)
@@ -56,7 +57,7 @@ public class MainSettingsChangeListener implements SettingsChangeListener {
 
         String position = "ic_punch_" +  preferenceManager.getPositionPreference() + "_step";
         ((ImageView) rootView.findViewById(R.id.positionView)).setImageResource( //setImageDrawable(ContextCompat.getDrawable(this,
-                activity.getResources().getIdentifier(position, "drawable", activity.getPackageName()));
+                activity.getResources().getIdentifier(position, DRAWABLE, activity.getPackageName()));
         return new Settings(punchType, hand, gloves, glovesWeight, position);
     }
 }

@@ -11,62 +11,64 @@ import com.artioml.practice.R;
 import com.artioml.practice.interfaces.SettingsChangeListener;
 import com.artioml.practice.models.Result;
 import com.artioml.practice.models.Settings;
+import com.artioml.practice.preferences.SettingsPreferenceManager;
 import com.artioml.practice.utils.PunchType;
+import com.artioml.practice.utils.SortOrder;
 
 /**
- * Created by user on 17.02.2017.
+ * Created by Polina P on 17.02.2017.
  */
 
 public class HistorySettingsChangeListener implements SettingsChangeListener {
 
     private static final String HISTORY_SETTINGS = "historySettings";
-    private static final String HAND = "pref_hand";
-    private static final String GLOVES = "pref_gloves";
-    private static final String POSITION = "pref_position";
-    private static final String PUNCH_TYPE = "pref_punchType";
+    private static final String DRAWABLE = "drawable";
 
     private Activity activity;
     private View rootView;
-    private Result currentSettings;
+    private Settings currentSettings;
 
-    public HistorySettingsChangeListener(Activity activity, View rootView) {
+    public HistorySettingsChangeListener(final Activity activity, View rootView) {
         this.activity = activity;
         this.rootView = rootView;
     }
 
     @Override
     public Settings fillSettingsPanel() {
-        SharedPreferences sharedPreferences =
-                activity.getSharedPreferences(HISTORY_SETTINGS, Context.MODE_PRIVATE);
+        SettingsPreferenceManager preferenceManager =
+                new SettingsPreferenceManager(activity, HISTORY_SETTINGS);
 
-        int punchType = sharedPreferences.getInt(PUNCH_TYPE, 0);
+        int punchType = preferenceManager.getPunchTypePreference();
         ((TextView)rootView.findViewById(R.id.typeHistoryTextView)).setText(activity.getResources().getStringArray(
                 R.array.punch_type_history_list)[punchType]);
 
-        String hand = sharedPreferences.getString(HAND, PunchType.DOESNT_MATTER.getValue());
+        String hand = preferenceManager.getHandPreference(PunchType.DOESNT_MATTER);
         ((ImageView)rootView.findViewById(R.id.handsHistoryImageView)).setImageResource(
                 activity.getResources().getIdentifier(
-                        "ic_" + hand + "_hand", "drawable", activity.getPackageName()));
+                        "ic_" + hand + "_hand", DRAWABLE, activity.getPackageName()));
 
-        String gloves = sharedPreferences.getString(GLOVES, PunchType.DOESNT_MATTER.getValue());
+        String gloves = preferenceManager.getGlovesPreference(PunchType.DOESNT_MATTER);
         ((ImageView) rootView.findViewById(R.id.glovesHistoryImageView)).setImageResource(
                 activity.getResources().getIdentifier(
-                        "ic_gloves_" + gloves, "drawable", activity.getPackageName()));
+                        "ic_gloves_" + gloves, DRAWABLE, activity.getPackageName()));
 
-        String position = sharedPreferences.getString(POSITION, PunchType.DOESNT_MATTER.getValue());
+        String position = preferenceManager.getPositionPreference(PunchType.DOESNT_MATTER);
         ((ImageView) rootView.findViewById(R.id.positionHistoryImageView)).setImageResource(
                 activity.getResources().getIdentifier(
-                        "ic_punch_" + position + "_step", "drawable", activity.getPackageName()));
+                        "ic_punch_" + position + "_step", DRAWABLE, activity.getPackageName()));
 
-        currentSettings = new Result(punchType, hand, gloves, "", position, 0, 0, 0, "");
-        return new Settings(punchType, hand, gloves, position);
-    }
+        String sortColumn = preferenceManager.getSortOrderPreference();
+        SortOrder orderType = preferenceManager.getSortTypePreference();
 
-    public Result getCurrentSettings() {
+        currentSettings = new Settings(punchType, hand, gloves, position, sortColumn, orderType);
         return currentSettings;
     }
 
-    public void setCurrentSettings(Result currentSettings) {
+    public Settings getCurrentSettings() {
+        return currentSettings;
+    }
+
+    public void setCurrentSettings(Settings currentSettings) {
         this.currentSettings = currentSettings;
     }
 }
